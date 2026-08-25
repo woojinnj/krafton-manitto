@@ -27,12 +27,53 @@
       align-items: center;
     }
 
-    .main-image {
-      width: 500px;
-      height: 500px;
-      background-color: #c8ff8c;
-      margin-bottom: 30px;
-    }
+    .flip {
+    width: 500px;
+    height: 500px;
+    perspective: 1100px;
+    margin-bottom: 30px;
+}
+
+.manitto-card {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    backface-visibility: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-front {
+    background-color: red;
+}
+
+.card-back {
+    background-color: royalblue;
+    color: white;
+
+    transform: rotateY(180deg);
+}
+
+/* 카드가 뒤집힌 상태 */
+.manitto-card.flipped {
+    transform: rotateY(180deg);
+}
 
     .button-area {
       display: flex;
@@ -123,121 +164,163 @@
       background-color: #f5f5f5;
     }
 
-    .flip { 
-  width: 200px;
-  height: 250px;
-  perspective: 1100px;
-}
-
-.card {
-  width: 100%; 
-  height: 100%; 
-  position: relative;
-  transition: .4s;
-  transform-style: preserve-3d;
-}	
-
-.front, .back {
-  position: absolute;
-  width: 100%; 
-  height: 100%;
-  backface-visibility: hidden;
-}
-
-.front {
-  background: red; 
-}
-
-.back { 
-  background: royalblue; 
-  transform: rotateY(180deg);
-}
-
-.flip:hover .card {
-  transform: rotateY(180deg);
-}
-
   </style>
 
   </head>
 
-  <div class="flip">
-    <div class="card">
-      <div class="front"></div>
-      <div class="back"></div>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html lang="ko">
 
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dashboard</title>
+
+    <style>
+        /* CSS */
+    </style>
+</head>
+
+<body>
+
     <main class="main-area">
-      <div class="main-image">
-        이미지
-      </div>
-      <div class="button-area">
-        <button>마니또</button>
-        <button>마니띠</button>
-      </div>
+
+        <div class="flip">
+            <div class="manitto-card" id="manitto-card">
+
+                <div class="card-front">
+                    <h2>마니또</h2>
+                    <p>버튼을 눌러 확인하세요!</p>
+                </div>
+
+                <div class="card-back">
+
+                    <h2 id="card-title">내 마니또</h2>
+
+                    <p>
+                        이름 :
+                        <span id="card-name"></span>
+                    </p>
+
+                    <p>
+                        MBTI :
+                        <span id="card-mbti"></span>
+                    </p>
+
+                    <p>
+                        WANT :
+                        <span id="card-want"></span>
+                    </p>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="button-area">
+
+            <button onclick="showManitto()">
+                내 마니또
+            </button>
+
+            <button onclick="showManitti()">
+                내 마니띠
+            </button>
+
+        </div>
+
     </main>
 
+
     <aside class="sidebar">
-      <section class="profile-area">
-        <div class="profile-top">
-          <div class="profile-image">
-            사진
-          </div>
-          <div class="name-box">
-            {{user.name}}
-          </div>
-        </div>
-        <div class="profile-info">
-          <p>MBTI : {{user.mbti}}</p>
-          <p>WANT : {{user.want}}</p>
-        </div>
-        <button class="logout-button">로그아웃</button>
-      </section>
 
-      <section class="ranking-area">
-        <table class="ranking-table">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>이름</th>
-              <th>별점</th>
-            </tr>
-          </thead>
+        <section class="profile-area">
 
-          <tbody>
+            <div class="profile-top">
 
-            {% for user in ranking %}
+                <div class="profile-image">
+                    사진
+                </div>
 
-            <tr>
-              <td>{{ loop.index }}</td>
-              <td>{{ user.name }}</td>
-              <td>{{ user.ranking }}</td>
-            </tr>
+                <div class="name-box">
+                    {{ user.name }}
+                </div>
 
-            {% endfor %}
+            </div>
 
-          </tbody>
-        </table>
-      </section>
+            <div class="profile-info">
+                <p>MBTI : {{ user.mbti }}</p>
+                <p>WANT : {{ user.want }}</p>
+            </div>
+
+            <button class="logout-button">
+                            <a href="{{ url_for('index') }}" class="index-link">로그아웃</a>
+
+            </button>
+
+        </section>
+
+
+        <section class="ranking-area">
+
+            <table class="ranking-table">
+
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>이름</th>
+                        <th>별점</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for user in ranking %}
+
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.ranking }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
     </aside>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  <script>
-    // HTML이 다 준비된 뒤 실행
-    $(document).ready(function () {});
 
-    // 수정중임
-    function doShuffle() {
-      $.ajax({
-        type: "POST",
-        url: "/api/shuffle", // 셔플 요청 api 함수는 app에서 만들예정
-        success: function (response) {
-          alert("셔플되었습니다!");
-          location.reload(); //페이지 새로고침
-        },
-      });
-    }
-  </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function showManitto() {
+            const card = document.getElementById("manitto-card");
+
+            document.getElementById("card-title").innerText = "내 마니또";
+            document.getElementById("card-name").innerText = "이지민";
+            document.getElementById("card-mbti").innerText = "ENFP";
+            document.getElementById("card-want").innerText = "초콜릿 주세요";
+
+            card.classList.add("flipped");
+        }
+
+        function showManitti() {
+            const card = document.getElementById("manitto-card");
+
+            document.getElementById("card-title").innerText = "내 마니띠";
+            document.getElementById("card-name").innerText = "현나";
+            document.getElementById("card-mbti").innerText = "ISTJ";
+            document.getElementById("card-want").innerText = "커피 주세요";
+
+            card.classList.add("flipped");
+        }
+    </script>
+
+</body>
+
 </html>

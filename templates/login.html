@@ -1,93 +1,129 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>login</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            min-height: 100vh;
+      body {
+    margin: 0;
+    min-height: 100vh;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-            font-family: Arial, sans-serif;
-        }
+    font-family: Arial, sans-serif;
+}
 
-        .login-container {
-            width: 500px;
-            text-align: center;
-        }
 
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
+/* 로고부터 로그인 버튼까지 전체 */
+.login-container {
+    width: 380px;
 
-        .login-form input {
-            width: 100%;
-            height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-            border: 2px solid #ddd;
-            padding: 10px 15px;
 
-            font-size: 30px;
-        }
+/* ㅁㄴㄸ 로고 */
+.button_logo {
+    margin-bottom: 50px;
+}
 
-        .login-button {
-            margin-top: 100px;
+.index-link {
+    color: #03c75a;
+    font-size: 42px;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: -3px;
+}
 
-            width: 300px;
-            height: 90px;
 
-            border: 7px solid black;
-            background-color: white;
+/* ID/PW/로그인 */
+.login-form {
+    width: 100%;
 
-            font-size: 50px;
-            font-weight: bold;
+    display: flex;
+    flex-direction: column;
 
-            cursor: pointer;
-        }
+    gap: 20px;
+}
+
+
+/* ID, PW */
+.login-input {
+    width: 100%;
+    height: 70px;
+
+    padding: 0 18px;
+
+    border: 1px solid #ddd;
+
+    font-size: 28px;
+    box-sizing: border-box;
+}
+
+
+/* 로그인 버튼 */
+.login-button {
+    width: 100%;
+    height: 70px;
+
+    margin-top: 20px;
+
+    background-color: white;
+
+    border: 4px solid black;
+
+    font-size: 32px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
     </style>
-</head>
+  </head>
 
+  <body>
+    
 <body>
 
     <div class="login-container">
 
-        <form
-            class="login-form"
-            method="POST"
-            action="/login">
+        <!-- 로고 -->
+        <div class="button_logo">
+            <a href="{{ url_for('index') }}" class="index-link">ㅁㄴㄸ</a>
+        </div>
 
-            <input
-                type="text"
-                name="username"
-                placeholder="ID"
-            >
+<!-- 로그인 -->
+<form class="login-form" method="POST" action="/login">
 
+    <input
+        type="text"
+        name="username"
+        placeholder="ID"
+        class="login-input"
+    >
+    
             <input
                 type="password"
                 name="password"
                 placeholder="PW"
+                class="login-input"
             >
 
-            <div>
-                <button
-                    type="submit"
-                    class="login-button">
-                    로그인
-                </button>
-            </div>
+            <button type="submit" class="login-button">
+                로그인
+            </button>
 
         </form>
 
