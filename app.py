@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # db name : krafton_users
 # db 요소 : _id uid pwd name mbti want rating targetId
+app = Flask(__name__)
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["manitto"]
