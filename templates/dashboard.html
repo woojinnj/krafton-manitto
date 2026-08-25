@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <button onclick="shuffle()">셔플합니다!</button>
+  </body>
+  <script>
+    // HTML이 다 준비된 뒤 실행
+    $(document).ready(function () {
+      showMemos();
+    });
+
+    // 수정중임
+    function shuffle() {
+      $.ajax({
+        type: "POST",
+        url: "/api/shuffle", // 셔플 요청 api 함수는 app에서 만들예정
+        success: function (response) {
+          alert("셔플되었습니다!");
+          location.reload(); //페이지 새로고침
+        },
+      });
+    }
+  </script>
+</html>
