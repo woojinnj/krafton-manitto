@@ -149,10 +149,8 @@
           </div>
         </div>
         <div class="profile-info">
-          <p>MBTI</p>
-          {{user.mbti}}
-          <p>WANT</p>
-          {{user.want}}
+          <p>MBTI : {{user.mbti}}</p>
+          <p>WANT : {{user.want}}</p>
         </div>
         <button class="logout-button">로그아웃</button>
       </section>
@@ -168,21 +166,17 @@
           </thead>
 
           <tbody>
+
+            {% for user in ranking %}
+
             <tr>
-              <td>1</td>
-              <td>홍길동</td>
-              <td>5.0</td>
+              <td>{{ loop.index }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.ranking }}</td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>김철수</td>
-              <td>4.8</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>이영희</td>
-              <td>4.5</td>
-            </tr>
+
+            {% endfor %}
+
           </tbody>
         </table>
       </section>

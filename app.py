@@ -70,7 +70,24 @@ def signup():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    user = {
+        "name": "국환",
+        "mbti": "ENFP",
+        "want": "맛있는 간식 주세요"
+    }
+
+    ranking = [
+        {"name": "이지민", "ranking": 157},
+        {"name": "현나", "ranking": 155},
+        {"name": "국환", "ranking": 152}
+    ]
+
+    return render_template(
+        'dashboard.html',
+        user=user,
+        ranking=ranking
+    )
+    return render_template('dashboard.html', user=user)
 
 @app.route('/api/shuffle', methods=['POST'])
 # 관리자 인증방식 추가
