@@ -1,97 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>login</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            min-height: 100vh;
+      body {
+        min-height: 100vh;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-            font-family: Arial, sans-serif;
-        }
+        font-family: Arial, sans-serif;
+      }
 
-        .login-container {
-            width: 500px;
-            text-align: center;
-        }
+      .login-container {
+        width: 500px;
+        text-align: center;
+      }
 
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
 
-        .login-form input {
-            width: 100%;
-            height: 70px;
+      .login-form input {
+        width: 100%;
+        height: 70px;
 
-            border: 2px solid #ddd;
-            padding: 10px 15px;
+        border: 2px solid #ddd;
+        padding: 10px 15px;
 
-            font-size: 30px;
-        }
+        font-size: 30px;
+      }
 
-        .login-button {
-            margin-top: 100px;
+      .login-button {
+        margin-top: 100px;
 
-            width: 300px;
-            height: 90px;
+        width: 300px;
+        height: 90px;
 
-            border: 7px solid black;
-            background-color: white;
+        border: 7px solid black;
+        background-color: white;
 
-            font-size: 50px;
-            font-weight: bold;
+        font-size: 50px;
+        font-weight: bold;
 
-            cursor: pointer;
-        }
+        cursor: pointer;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="login-container">
+      <form class="login-form" method="POST" action="/login">
+        {% if error %}
+        <p>{{ error }}</p>
+        {% endif %}
+        <input type="text" name="username" placeholder="ID" />
 
-        <form
-            class="login-form"
-            method="POST"
-            action="/login">
+        <input type="password" name="password" placeholder="PW" />
 
-            <input
-                type="text"
-                name="username"
-                placeholder="ID"
-            >
-
-            <input
-                type="password"
-                name="password"
-                placeholder="PW"
-            >
-
-            <div>
-                <button
-                    type="submit"
-                    class="login-button">
-                    로그인
-                </button>
-            </div>
-
-        </form>
-
+        <div>
+          <button type="submit" class="login-button">로그인</button>
+        </div>
+      </form>
     </div>
-
-</body>
+  </body>
 </html>

@@ -38,21 +38,20 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         user = users.find_one({"username": username})
-        
+
         if user and check_password_hash(user["password"], password):
             access_token = create_access_token(identity=username)
             response = redirect(url_for("dashboard"))
             set_access_cookies(response, access_token)
             return response
-        
+
         else:
             return render_template(
-                'login.html',
-                error="아이디 또는 비밀번호가 올바르지 않습니다."
+                "login.html", error="아이디 또는 비밀번호가 올바르지 않습니다."
             )
     return render_template("login.html")
 
@@ -60,27 +59,51 @@ def login():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        name = request.form["name"]
-        want = request.form["want"]
-        mbti = request.form["mbti"]
+        username = request.form.get("username")
+        password = request.form.get("password")
+        name = request.form.get("name")
+        want = request.form.get("want")
+        mbti = request.form.get("mbti")
 
         if not username or not password or not name or not want or not mbti:
-            return render_template("signup.html", error="모든 항목을 입력해주세요.")
+            return render_template(
+                "signup.html",
+                error="모든 항목을 입력해주세요.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
+            )
 
         existing_user = users.find_one({"username": username})
         if existing_user:
-            return render_template("signup.html", error="이미 존재하는 아이디입니다.")
+            return render_template(
+                "signup.html",
+                error="이미 존재하는 아이디입니다.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
+            )
 
         if len(username) < 4:
             return render_template(
-                "signup.html", error="아이디는 4글자 이상이어야 합니다."
+                "signup.html",
+                error="아이디는 4글자 이상이어야 합니다.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
             )
 
         if len(password) < 8:
             return render_template(
-                "signup.html", error="비밀번호는 8글자 이상이어야 합니다."
+                "signup.html",
+                error="비밀번호는 8글자 이상이어야 합니다.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
             )
 
         hashed_password = generate_password_hash(password)
@@ -104,25 +127,25 @@ def signup():
 @app.route("/dashboard")
 @jwt_required()
 def dashboard():
-    username=get_jwt_identity()
-    return render_template("dashboard.html",username=username)
+    username = get_jwt_identity()
+    return render_template("dashboard.html", username=username)
 
 
 ##############################
 # 추가기능
 ##############################
 
+
 # 좋아요주기
-@app.route('/api/likes', methods=['POST'])
+@app.route("/api/likes", methods=["POST"])
 def likes():
-    user_id = request.form.get('id')
+    user_id = request.form.get("id")
 
     getUserId(user_id)
 
 
-
 # 셔플하기
-@app.route('/api/shuffle', methods=['POST'])
+@app.route("/api/shuffle", methods=["POST"])
 # 관리자 인증방식 추가
 def shuffle():
     # 데이터베이스를 가져오기
@@ -143,84 +166,95 @@ def shuffle():
     return jsonify({"result": "false"})
 
 
+##############################
+# 대시보드 메인화면 기능
+##############################
 
-##############################
-#대시보드 메인화면 기능
-##############################
 
 # 마니또 조회하기
-@app.route('/dashboard/showManitto', methods=['GET'])
+@app.route("/dashboard/showManitto", methods=["GET"])
 def showManitto():
-    user_id = request.form.get('id')
+    user_id = request.form.get("id")
 
-    manitto_doc = db.users.find_one({'targetId': ObjectId(user_id)}) #마니띠 정보
+    manitto_doc = db.users.find_one({"targetId": ObjectId(user_id)})  # 마니띠 정보
 
-    manitto = getUserId(manitto_doc['_id']) #마니띠
+    manitto = getUserId(manitto_doc["_id"])  # 마니띠
 
-    return jsonify({'result': 'success', 'user': manitto})
-
+    return jsonify({"result": "success", "user": manitto})
 
 
 # 마니띠 조회하기
-@app.route('/dashboard/showManitti', methods=['GET'])
-def showManitti():  # noqa: F811
-    user_id = request.form.get('id')
+@app.route("/dashboard/showManitti", methods=["GET"])
+def showManitti():
+    user_id = request.form.get("id")
 
-    me = db.users.find_one({'_id': ObjectId(user_id)}) #나의 정보
+    me = db.users.find_one({"_id": ObjectId(user_id)})  # 나의 정보
 
-    manitti = getUserId(me['targetId']) #마니띠
+    manitti = getUserId(me["targetId"])  # 마니띠
 
-    return jsonify({'result': 'success', 'user': manitti})
-
+    return jsonify({"result": "success", "user": manitti})
 
 
 ##############################
-#사이드바 기능
+# 사이드바 기능
 ##############################
+
 
 # 마이페이지 보기
-@app.route('/dashboard/side/myPage')
+@app.route("/dashboard/side/myPage")
 def myPage():
-    user_id = request.form.get('id')
+    user_id = request.form.get("id")
     user = db.users.find_one(
-            {'_id':ObjectId(user_id)},
-            {'_id':0, 'name':1, 'mbti':1, 'rating_sum':1, 'want':1} # id를 제외하고 리턴
-        )
-    return jsonify({'result': 'success', 'user': user})
+        {"_id": ObjectId(user_id)},
+        {
+            "_id": 0,
+            "name": 1,
+            "mbti": 1,
+            "rating_sum": 1,
+            "want": 1,
+        },  # id를 제외하고 리턴
+    )
+    return jsonify({"result": "success", "user": user})
+
 
 # 정보 업데이트
-@app.route('/dashboard/side/update', methods=['POST'])
+@app.route("/dashboard/side/update", methods=["POST"])
 def update_user():
-    user_id = request.form.get('id')
-    
+    user_id = request.form.get("id")
+
     # 들어온 값만 dictionary
     update_data = {}
-    if 'name' in request.form: update_data['name'] = request.form['name']
-    if 'mbti' in request.form: update_data['mbti'] = request.form['mbti']
-    if 'want' in request.form: update_data['want'] = request.form['want']
+    if "name" in request.form:
+        update_data["name"] = request.form["name"]
+    if "mbti" in request.form:
+        update_data["mbti"] = request.form["mbti"]
+    if "want" in request.form:
+        update_data["want"] = request.form["want"]
 
     # update_data에 포함된 필드만 수정
-    db.users.update_one({'_id': ObjectId(user_id)}, {'$set': update_data})
-    return jsonify({'result': 'success'})
-
-
+    db.users.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
+    return jsonify({"result": "success"})
 
 
 ####################
 # 유틸 함수
 ####################
 
-#id를 받아 유저 호출
+
+# id를 받아 유저 호출
 def getUserId(user_id):
     return db.users.find_one(
-        {'_id': ObjectId(user_id)},
-        {'_id': 0, 'password': 0, 'targetId': 0, 'name': 1, 'mbti': 1, 'rating_sum': 1, 'want': 1}
+        {"_id": ObjectId(user_id)},
+        {
+            "_id": 0,
+            "password": 0,
+            "targetId": 0,
+            "name": 1,
+            "mbti": 1,
+            "rating_sum": 1,
+            "want": 1,
+        },
     )
-
-
-
-
-
 
 
 # 더미데이터 테스트
@@ -244,5 +278,5 @@ def getUserId(user_id):
 #     db.users.insert_many(dummy_users)   # 5명 한 번에 삽입
 #     return jsonify({"result": "success", "inserted": len(dummy_users)})
 
-if __name__=='__main__':
+if __name__ == "__main__":
     app.run(debug=True)

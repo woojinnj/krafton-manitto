@@ -1,89 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>index</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            min-height: 100vh;
-            background-color: #c8ff8c;
+      body {
+        min-height: 100vh;
+        background-color: #c8ff8c;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-            font-family: Arial, sans-serif;
-        }
+        font-family: Arial, sans-serif;
+      }
 
-        .landing-container {
-            text-align: center;
-        }
+      .landing-container {
+        text-align: center;
+      }
 
-        .title {
-            font-size: 70px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+      .title {
+        font-size: 70px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
 
-        .subtitle {
-            font-size: 45px;
-            font-weight: bold;
-            margin-bottom: 100px;
-        }
+      .subtitle {
+        font-size: 45px;
+        font-weight: bold;
+        margin-bottom: 100px;
+      }
 
-        .button-area {
-            display: flex;
-            gap: 100px;
-            justify-content: center;
-        }
+      .button-area {
+        display: flex;
+        gap: 100px;
+        justify-content: center;
+      }
 
-        .button-area a {
-            display: inline-block;
-            width: 220px;
-            padding: 15px;
+      .button-area a {
+        display: inline-block;
+        width: 220px;
+        padding: 15px;
 
-            border: 6px solid black;
-            background-color: transparent;
+        border: 6px solid black;
+        background-color: transparent;
 
-            color: black;
-            text-decoration: none;
-            font-size: 45px;
-            font-weight: bold;
-        }
+        color: black;
+        text-decoration: none;
+        font-size: 45px;
+        font-weight: bold;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="landing-container">
+      <h1 class="title">Jungle</h1>
 
-        <h1 class="title">Jungle</h1>
+      <div class="subtitle">마니또</div>
 
-        <div class="subtitle">
-            마니또
-        </div>
+      <div class="button-area">
+        <a href="/login"> 로그인 </a>
 
-        <div class="button-area">
-
-            <a href="/login">
-                로그인
-            </a>
-
-            <a href="/signup">
-                회원가입
-            </a>
-
-        </div>
-
+        <a href="/signup"> 회원가입 </a>
+      </div>
     </div>
-
-</body>
+  </body>
 </html>
