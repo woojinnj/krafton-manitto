@@ -1,9 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from pymongo import MongoClient
-from werkzeug.security import generate_password_hash, check_password_hash
-from bson.objectid import ObjectId
 import random
 
+from bson.objectid import ObjectId
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_jwt_extended import (
     JWTManager,
@@ -13,7 +10,7 @@ from flask_jwt_extended import (
     set_access_cookies,
 )
 from pymongo import MongoClient
-from werkzeug.security import check_password_hash, generate_password_hash  # noqa: F401
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # db name : krafton_users
 # db 요소 : _id uid pwd name mbti want rating targetId
@@ -120,7 +117,7 @@ def dashboard():
 def likes():
     user_id = request.form.get('id')
 
-    users = getUserId(user_id)
+    getUserId(user_id)
 
 
 
@@ -166,7 +163,7 @@ def showManitto():
 
 # 마니띠 조회하기
 @app.route('/dashboard/showManitti', methods=['GET'])
-def showManitto():
+def showManitto():  # noqa: F811
     user_id = request.form.get('id')
 
     me = db.users.find_one({'_id': ObjectId(user_id)}) #나의 정보
