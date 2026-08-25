@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import random
 # db name : krafton_users
 # db 요소 : _id uid pwd name mbti want rating targetId
 app = Flask(__name__)
@@ -73,8 +73,25 @@ def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/api/shuffle', methods=['POST'])
-def api_shuffle():
-    return jsonify({'result': 'success'})
+# 관리자 인증방식 추가
+def shuffle():
+    # 데이터베이스를 가져오기
+    users = list(db.users.find())
+    random.shuffle(users)
+    n = len(users)
+
+    # 셔플하기 성공
+    if(n > 2):
+        for i in range(n):
+            db.users.update_one(
+                {'_id': users[i]['_id']},
+                {'$set': {'targetId': users[(i+1)%n]['_id']}}
+            )
+        return jsonify({'result': 'success'})
+    
+    # 셔플하기 실패
+    return jsonify({'result': 'false'})
+
 
 if __name__=='__main__':
     app.run(debug=True)
