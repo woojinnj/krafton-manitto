@@ -1,32 +1,136 @@
-<form method="POST" action="/signup">
-    <div>
-        <label>아이디</label>
-        <input name="username">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signup</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family: Arial, sans-serif;
+        }
+
+        .signup-container {
+            width: 500px;
+            text-align: center;
+        }
+
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .signup-form input {
+            width: 100%;
+            height: 60px;
+
+            border: 2px solid #ddd;
+            padding: 10px 15px;
+
+            font-size: 25px;
+        }
+
+        .signup-form select {
+            width: 100%;
+            height: 60px;
+
+            border: 2px solid #ddd;
+            padding: 10px 15px;
+
+            font-size: 25px;
+        }
+
+        .signup-button {
+            margin-top: 60px;
+
+            width: 300px;
+            height: 90px;
+
+            border: 7px solid black;
+            background-color: white;
+
+            font-size: 45px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="signup-container">
+
+        <form class="signup-form"
+              method="POST"
+              action="/signup">
+
+            <input
+                type="text"
+                name="username"
+                placeholder="ID"
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="PW"
+            >
+
+            <input
+                type="text"
+                name="name"
+                placeholder="NAME"
+            >
+
+            <select name="mbti" id="mbti">
+                <option value="ISTJ">ISTJ</option>
+                <option value="ISFJ">ISFJ</option>
+                <option value="INFJ">INFJ</option>
+                <option value="INTJ">INTJ</option>
+                <option value="ISTP">ISTP</option>
+                <option value="ISFP">ISFP</option>
+                <option value="INFP">INFP</option>
+                <option value="INTP">INTP</option>
+                <option value="ESTP">ESTP</option>
+                <option value="ESFP">ESFP</option>
+                <option value="ENFP">ENFP</option>
+                <option value="ENTP">ENTP</option>
+                <option value="ESTJ">ESTJ</option>
+                <option value="ESFJ">ESFJ</option>
+                <option value="ENFJ">ENFJ</option>
+                <option value="ENTJ">ENTJ</option>
+            </select>
+
+            <input
+                type="text"
+                name="want"
+                placeholder="WANT"
+            >
+
+            <div>
+                <button
+                    type="submit"
+                    class="signup-button">
+                    회원가입
+                </button>
+            </div>
+        </form>
+
     </div>
 
-    <div>
-        <label>비밀번호</label>
-        <input name="password" type="password">
-    </div>
-
-    <div>
-        <label>이름</label>
-        <input name="name">
-    </div>
-
-    <div>
-        <label>원하는 것</label>
-        <input name="want">
-    </div>
-
-    <div>
-        <label>MBTI</label>
-        <input name="mbti">
-    </div>
-
-    <button type="submit">회원가입</button>
-</form>
-
-{% if error %}
-    <p>{{ error }}</p>
-{% endif %}
+</body>
+</html>
