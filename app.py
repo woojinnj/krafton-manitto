@@ -73,11 +73,10 @@ def signup():
 def dashboard():
     return render_template('dashboard.html')
 
-##############################
 # 추가기능
 ##############################
 
-# 좋아요주기
+# 좋아요주기 #수정해야 함
 @app.route('/api/likes', methods=['POST'])
 def likes():
     user_id = request.form.get('id')
@@ -107,9 +106,6 @@ def shuffle():
     # 셔플하기 실패
     return jsonify({'result': 'false'})
 
-
-
-##############################
 #대시보드 메인화면 기능
 ##############################
 
@@ -128,7 +124,7 @@ def showManitto():
 
 # 마니띠 조회하기
 @app.route('/dashboard/showManitti', methods=['GET'])
-def showManitto():
+def showManitti():
     user_id = request.form.get('id')
 
     me = db.users.find_one({'_id': ObjectId(user_id)}) #나의 정보
@@ -137,9 +133,6 @@ def showManitto():
 
     return jsonify({'result': 'success', 'user': manitti})
 
-
-
-##############################
 #사이드바 기능
 ##############################
 
@@ -154,7 +147,7 @@ def myPage():
     return jsonify({'result': 'success', 'user': user})
 
 # 정보 업데이트
-@app.route('dashboard/side/update', methods=['POST'])
+@app.route('/dashboard/side/update', methods=['POST'])
 def update_user():
     user_id = request.form.get('id')
     
@@ -166,12 +159,9 @@ def update_user():
 
     # update_data에 포함된 필드만 수정
     db.users.update_one({'_id': ObjectId(user_id)}, {'$set': update_data})
+
     return jsonify({'result': 'success'})
 
-
-
-
-####################
 # 유틸 함수
 ####################
 
