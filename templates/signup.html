@@ -78,29 +78,40 @@
               method="POST"
               action="/signup">
 
-            <input
+            <div class="input-group">
+                <label for="username">ID</label>
+              <input
                 type="text"
                 name="username"
                 placeholder="ID"
             >
+            </div>
 
-            <input
-                type="password"
-                name="password"
-                placeholder="PW"
-            >
+            <div class="input-group">
+                <label for="password">PW</label>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="PW"
+                >
+            </div>
 
-            <input
-                type="text"
-                name="name"
-                placeholder="NAME"
-            >
+            <div class="input-group">
+                <label for="name">NAME</label>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="NAME"
+                >
+            </div>
 
-            <select name="mbti" id="mbti">
-                <option value="ISTJ">ISTJ</option>
-                <option value="ISFJ">ISFJ</option>
-                <option value="INFJ">INFJ</option>
-                <option value="INTJ">INTJ</option>
+            <div class="input-group">
+                <label for="mbti">MBTI</label>
+                <select name="mbti" id="mbti">
+                    <option value="ISTJ">ISTJ</option>
+                    <option value="ISFJ">ISFJ</option>
+                    <option value="INFJ">INFJ</option>
+                    <option value="INTJ">INTJ</option>
                 <option value="ISTP">ISTP</option>
                 <option value="ISFP">ISFP</option>
                 <option value="INFP">INFP</option>
@@ -115,11 +126,14 @@
                 <option value="ENTJ">ENTJ</option>
             </select>
 
-            <input
-                type="text"
-                name="want"
-                placeholder="WANT"
-            >
+            <div class="input-group">
+                <label for="want">WANT</label>
+                <input
+                    type="text"
+                    name="want"
+                    placeholder="WANT"
+                >
+            </div>
 
             <div>
                 <button
