@@ -12,8 +12,6 @@ from flask_jwt_extended import (
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash, generate_password_hash
 
-# db name : krafton_users
-# db 요소 : _id uid pwd name mbti want rating targetId
 app = Flask(__name__)
 
 app.config["JWT_SECRET_KEY"] = (
@@ -112,37 +110,60 @@ def dashboard():
 # 추가기능
 ##############################
 
-# 좋아요주기
+# 좋아요 주기 /success
 @app.route('/api/likes', methods=['POST'])
 def likes():
+    like = int(request.form.get('like'))
     user_id = request.form.get('id')
+    # 5보다 작게 받기 추가해야함
+    me = db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$inc":{
+            "rating_sum": like, 
+            "rating_count": 1
+            }}
+    ) #나의 정보
 
-    getUserId(user_id)
+    return jsonify({"result":"success"})
 
+# 정렬하기
+@app.route('/api/sort', methods=['POST'])
+def sort():
+    userList = list(users.find({}, {'_id' : 0 , 'name':1, 'rating_sum': 1, 'rating_count':1}))
+    
+    ranker = []
+    for user in userList:
+        name = user.get('name')
+        if user.get('rating_count', 0) != 0:
+            avg = user.get('rating_sum', 0) / user.get('rating_count', 0)
+            ranker.append({'name': name, 'avg': avg})
 
+    ranker.sort(key=lambda x: x['avg'], reverse=True) #파이썬 정렬 함수
 
-# 셔플하기
+    return ranker[:5]
+
+    
+
+# 셔플하기 /success
 @app.route('/api/shuffle', methods=['POST'])
 # 관리자 인증방식 추가
 def shuffle():
     # 데이터베이스를 가져오기
-    users = list(db.users.find())
-    random.shuffle(users)
-    n = len(users)
+    userList = list(users.find())
+    random.shuffle(userList)
+    n = len(userList)
 
     # 셔플하기 성공
     if n > 2:
         for i in range(n):
             db.users.update_one(
-                {"_id": users[i]["_id"]},
-                {"$set": {"targetId": users[(i + 1) % n]["_id"]}},
+                {"_id": userList[i]["_id"]},
+                {"$set": {"targetId": userList[(i + 1) % n]["_id"]}},
             )
         return jsonify({"result": "success"})
 
     # 셔플하기 실패
     return jsonify({"result": "false"})
-
-
 
 ##############################
 #대시보드 메인화면 기능
@@ -151,9 +172,9 @@ def shuffle():
 # 마니또 조회하기
 @app.route('/dashboard/showManitto', methods=['GET'])
 def showManitto():
-    user_id = request.form.get('id')
+    user_id = request.args.get('id')
 
-    manitto_doc = db.users.find_one({'targetId': ObjectId(user_id)}) #마니띠 정보
+    manitto_doc = users.find_one({'targetId': ObjectId(user_id)}) #마니띠 정보
 
     manitto = getUserId(manitto_doc['_id']) #마니띠
 
@@ -163,10 +184,10 @@ def showManitto():
 
 # 마니띠 조회하기
 @app.route('/dashboard/showManitti', methods=['GET'])
-def showManitti():  # noqa: F811
-    user_id = request.form.get('id')
+def showManitti():
+    user_id = request.args.get('id')
 
-    me = db.users.find_one({'_id': ObjectId(user_id)}) #나의 정보
+    me = users.find_one({'_id': ObjectId(user_id)}) #나의 정보
 
     manitti = getUserId(me['targetId']) #마니띠
 
@@ -179,10 +200,10 @@ def showManitti():  # noqa: F811
 ##############################
 
 # 마이페이지 보기
-@app.route('/dashboard/side/myPage')
+@app.route('/dashboard/side/myPage', methods=['POST'])
 def myPage():
     user_id = request.form.get('id')
-    user = db.users.find_one(
+    user = users.find_one(
             {'_id':ObjectId(user_id)},
             {'_id':0, 'name':1, 'mbti':1, 'rating_sum':1, 'want':1} # id를 제외하고 리턴
         )
@@ -200,11 +221,8 @@ def update_user():
     if 'want' in request.form: update_data['want'] = request.form['want']
 
     # update_data에 포함된 필드만 수정
-    db.users.update_one({'_id': ObjectId(user_id)}, {'$set': update_data})
+    users.update_one({'_id': ObjectId(user_id)}, {'$set': update_data})
     return jsonify({'result': 'success'})
-
-
-
 
 ####################
 # 유틸 함수
@@ -214,8 +232,21 @@ def update_user():
 def getUserId(user_id):
     return db.users.find_one(
         {'_id': ObjectId(user_id)},
-        {'_id': 0, 'password': 0, 'targetId': 0, 'name': 1, 'mbti': 1, 'rating_sum': 1, 'want': 1}
+        {'_id': 0, 'name': 1, 'mbti': 1, 'rating_sum': 1, 'want': 1}
     )
+
+# 점수 평균 함수
+def averageRating(user_id):
+    user = users.find_one({"_id":ObjectId(user_id)})
+
+    if not user:
+        return 0.0
+
+    sum = user.get("rating_sum", 0) # 기본 0
+    count = user.get("rating_count",0)
+
+    return round(sum/count, 2)
+
 
 
 
@@ -226,7 +257,7 @@ def getUserId(user_id):
 # 더미데이터 테스트
 # @app.route('/api/dummy')
 # def make_dummy():
-#     db.users.delete_many({})
+#     users.delete_many({})
 
 #     dummy_users = [
 #         {"username": "test1", "name": "핑구", "want": "커피 사주기", "mbti": "INTP"},
@@ -241,7 +272,7 @@ def getUserId(user_id):
 #         u["rating_count"] = 0
 #         u["targetId"] = None
 
-#     db.users.insert_many(dummy_users)   # 5명 한 번에 삽입
+#     users.insert_many(dummy_users)   # 5명 한 번에 삽입
 #     return jsonify({"result": "success", "inserted": len(dummy_users)})
 
 if __name__=='__main__':
