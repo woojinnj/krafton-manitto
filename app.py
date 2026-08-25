@@ -93,26 +93,5 @@ def shuffle():
     return jsonify({'result': 'false'})
 
 
-# 더미데이터 테스트
-# @app.route('/api/dummy')
-# def make_dummy():
-#     db.users.delete_many({})
-
-#     dummy_users = [
-#         {"username": "test1", "name": "핑구", "want": "커피 사주기", "mbti": "INTP"},
-#         {"username": "test2", "name": "핑가", "want": "칭찬 많이", "mbti": "ENFP"},
-#         {"username": "test3", "name": "핑고", "want": "간식 챙기기", "mbti": "ISTJ"},
-#         {"username": "test4", "name": "핑조", "want": "손편지", "mbti": "ESFJ"},
-#         {"username": "test5", "name": "핑수", "want": "같이 산책", "mbti": "INFP"},
-#     ]
-#     for u in dummy_users:
-#         u["password"] = generate_password_hash("1234")  # 회원가입에도 쓰는 해시 함수
-#         u["rating_sum"] = 0
-#         u["rating_count"] = 0
-#         u["targetId"] = None
-
-#     db.users.insert_many(dummy_users)   # 5명 한 번에 삽입
-#     return jsonify({"result": "success", "inserted": len(dummy_users)})
-
 if __name__=='__main__':
     app.run(debug=True)
