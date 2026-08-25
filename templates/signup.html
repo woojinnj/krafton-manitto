@@ -1,0 +1,32 @@
+<form method="POST" action="/signup">
+    <div>
+        <label>아이디</label>
+        <input name="username">
+    </div>
+
+    <div>
+        <label>비밀번호</label>
+        <input name="password" type="password">
+    </div>
+
+    <div>
+        <label>이름</label>
+        <input name="name">
+    </div>
+
+    <div>
+        <label>원하는 것</label>
+        <input name="want">
+    </div>
+
+    <div>
+        <label>MBTI</label>
+        <input name="mbti">
+    </div>
+
+    <button type="submit">회원가입</button>
+</form>
+
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
