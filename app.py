@@ -163,7 +163,7 @@ def showManitto():
 
 # 마니띠 조회하기
 @app.route('/dashboard/showManitti', methods=['GET'])
-def showManitto():  # noqa: F811
+def showManitti():  # noqa: F811
     user_id = request.form.get('id')
 
     me = db.users.find_one({'_id': ObjectId(user_id)}) #나의 정보
@@ -189,7 +189,7 @@ def myPage():
     return jsonify({'result': 'success', 'user': user})
 
 # 정보 업데이트
-@app.route('dashboard/side/update', methods=['POST'])
+@app.route('/dashboard/side/update', methods=['POST'])
 def update_user():
     user_id = request.form.get('id')
     
