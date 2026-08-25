@@ -1,7 +1,12 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify, render_template
+from pymongo import MongoClient
+
+# db name : krafton_users
+# db 요소 : _id uid pwd name mbti want rating targetId
 
 app =Flask(__name__)
-
+# client = MongoClient("이름 + 로컬 주소입력")
+# db = client.kraftonUsers
 
 @app.route('/')
 def index():
@@ -18,6 +23,10 @@ def signup():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/api/shuffle', methods=['POST'])
+def api_shuffle():
+    return jsonify({'result': 'success'})
 
 if __name__=='__main__':
     app.run(debug=True)
