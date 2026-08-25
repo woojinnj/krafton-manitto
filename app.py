@@ -7,6 +7,7 @@ app =Flask(__name__)
 client = MongoClient("mongodb://localhost:27017/")
 db = client["manitto"]
 users = db["users"]
+users.create_index("username", unique=True)
 
 @app.route('/')
 def index():
@@ -38,7 +39,7 @@ def signup():
                 error='이미 존재하는 아이디입니다.'
             )
         
-        if len(username)<8:
+        if len(username)<4:
             return render_template(
                 'signup.html',
                 error='아이디는 4글자 이상이어야 합니다.'
