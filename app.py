@@ -111,13 +111,13 @@ def signup():
             {
                 "username": username,
                 "password": hashed_password,
-                "role":"user",
                 "name": name,
                 "want": want,
                 "mbti": mbti,
                 "rating_sum": 0,
                 "rating_count": 0,
                 "target_id": None,
+                "rated":False,
             }
         )
 
@@ -134,13 +134,30 @@ def logout():
 @jwt_required()
 def dashboard():
     username = get_jwt_identity()
-    user = users.find_one({"username": username})
 
-    user_type = is_admin(username)
-    rank = ranking()
+    user = db.users.find_one({"username": username})
+
+    user_list = list(
+        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+    )
+
+    ranking = []
+
+    for rank_user in user_list:
+        rating_sum = rank_user.get("rating_sum", 0)
+        rating_count = rank_user.get("rating_count", 0)
+
+        if rating_count == 0:
+            avg = 0
+        else:
+            avg = rating_sum / rating_count
+
+        ranking.append({"name": rank_user["name"], "ranking": avg})
+
+    ranking.sort(key=lambda x: x["ranking"], reverse=True)
 
     return render_template(
-        "dashboard.html", username=username, user=user, ranking=rank, is_admin=user_type
+        "dashboard.html", username=username, user=user, ranking=ranking
     )
 
 
@@ -157,39 +174,74 @@ def likes():
     current_user = users.find_one({"username": username})
 
     if current_user.get("target_id") is None:
-        return jsonify(
-            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
-        )
+        return jsonify({
+            "result": "false",
+            "message": "아직 마니또가 배정되지 않았습니다."
+        })
+
+    # 이미 별점을 줬는지 확인
+    if current_user.get("rated", False):
+        return jsonify({
+            "result": "false",
+            "message": "이미 별점을 등록했습니다."
+        })
 
     try:
         like = int(request.form.get("like"))
-
     except (TypeError, ValueError):
         return jsonify({"result": "false"})
 
-    # 5보다 작게 받기 추가해야함
     if 1 <= like <= 5:
+
+        # 내 마니띠에게 별점 추가
         users.update_one(
             {"target_id": username},
-            {"$inc": {"rating_sum": like, "rating_count": 1}},
+            {"$inc": {
+                "rating_sum": like,
+                "rating_count": 1
+            }}
         )
+
+        # 나는 별점을 줬다고 표시
+        users.update_one(
+            {"username": username},
+            {"$set": {"rated": True}}
+        )
+
         return jsonify({"result": "success"})
-    # 실패
+
     return jsonify({"result": "false"})
+
+# # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
+# @app.route("/api/sort", methods=["GET"])
+# def sort():
+#     userList = list(
+#         users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+#     )
+
+#     ranker = []
+#     for user in userList:
+#         name = user.get("name")
+#         rating_sum = user.get("rating_sum", 0)
+#         count = user.get("rating_count", 0)
+#         if count != 0:
+#             avg = rating_sum / count
+#             ranker.append({"name": name, "avg": avg})
+#     # 파이썬 정렬 함수
+#     ranker.sort(key=lambda x: x["avg"], reverse=True)
+
+#     return jsonify({"result": "success", "ranker": ranker[:5]})
+
 
 # 셔플하기 / success
 @app.route("/api/shuffle", methods=["POST"])
 # 관리자 인증방식 추가
-@jwt_required()
 def shuffle():
-    username = get_jwt_identity()
-
-    if not is_admin(username):
-        return jsonify({"result": "false", "message": "관리자 권한이 필요합니다."}), 403
-        
+    # 데이터베이스를 가져오기
     userList = list(users.find())
     random.shuffle(userList)
     n = len(userList)
+
     # 셔플하기 성공
     if n > 2:
         for i in range(n):
@@ -201,7 +253,6 @@ def shuffle():
 
     # 셔플하기 실패
     return jsonify({"result": "false"})
-    
 
 
 ##############################
@@ -309,56 +360,26 @@ def get_target(username):
         return None
     return user.get("target_id")
 
-# 유저타입 / success
-def is_admin(username):
-    user = users.findone({'username':username},{'_id':0,"role":1})
-    if user and user.get("role") == "admin":
-        return True
-    return False
 
-# 랭킹함수 / success
-def ranking():
-    user_list = list(
-        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
-    )
-    
-    ranking = []
-    
-    for rank_user in user_list:
-        rating_sum = rank_user.get("rating_sum", 0)
-        rating_count = rank_user.get("rating_count", 0)
-    
-        if rating_count == 0:
-            avg = 0
-        else:
-            avg = rating_sum / rating_count
-    
-        ranking.append({"name": rank_user["name"], "ranking": avg})
-    
-    ranking.sort(key=lambda x: x["ranking"], reverse=True)
-     
-    return ranking
-
-# # 더미테스트
-# @app.route("/api/dummy")
+# 더미데이터 테스트
+# @app.route('/api/dummy')
 # def make_dummy():
 #     users.delete_many({})
 
 #     dummy_users = [
-#         {"username": "test1", "name": "핑구", "want": "커피 사주기", "mbti": "INTP", "role": "admin"}, # 🔑 관리자
-#         {"username": "test2", "name": "핑가", "want": "칭찬 많이", "mbti": "ENFP", "role": "user"},
-#         {"username": "test3", "name": "핑고", "want": "간식 챙기기", "mbti": "ISTJ", "role": "user"},
-#         {"username": "test4", "name": "핑조", "want": "손편지", "mbti": "ESFJ", "role": "user"},
-#         {"username": "test5", "name": "핑수", "want": "같이 산책", "mbti": "INFP", "role": "user"},
+#         {"username": "test1", "name": "핑구", "want": "커피 사주기", "mbti": "INTP"},
+#         {"username": "test2", "name": "핑가", "want": "칭찬 많이", "mbti": "ENFP"},
+#         {"username": "test3", "name": "핑고", "want": "간식 챙기기", "mbti": "ISTJ"},
+#         {"username": "test4", "name": "핑조", "want": "손편지", "mbti": "ESFJ"},
+#         {"username": "test5", "name": "핑수", "want": "같이 산책", "mbti": "INFP"},
 #     ]
-    
 #     for u in dummy_users:
-#         u["password"] = generate_password_hash("12345678")  # 🔒 비밀번호 8자리(12345678)로 변경
+#         u["password"] = generate_password_hash("1234")  # 회원가입에도 쓰는 해시 함수
 #         u["rating_sum"] = 0
 #         u["rating_count"] = 0
 #         u["target_id"] = None
 
-#     users.insert_many(dummy_users)  # 5명 한 번에 삽입
+#     users.insert_many(dummy_users)   # 5명 한 번에 삽입
 #     return jsonify({"result": "success", "inserted": len(dummy_users)})
 
 if __name__ == "__main__":
