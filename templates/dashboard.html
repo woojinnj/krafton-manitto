@@ -201,10 +201,11 @@
 
   </head>
 
-<!DOCTYPE html>
-<html lang="ko">
 
-<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dashboard</title>
@@ -212,7 +213,7 @@
     <style>
         /* CSS */
     </style>
-</head>
+
 
 <body>
 
@@ -266,6 +267,10 @@
                 마니띠
             </button>
 
+            <button onclick="shuffleManitto()">
+                마니또 배정
+            </button>
+
         </div>
 
     </main>
@@ -289,7 +294,7 @@
 
             <div class="profile-info">
                 <p>MBTI : {{ user.mbti }}</p>
-                <p>WANT : {{ user.want }}</p>
+                <p>갖고 싶은 것 : {{ user.want }}</p>
             </div>
 
             <button class="logout-button">
@@ -317,6 +322,7 @@
                     {% for rank_user in ranking %}
 
                     <tr>
+                        <td>{{loop.index}}</td>
                         <td>{{ rank_user.name }}</td>
                         <td>{{ "%.1f"|format(rank_user.ranking) }}</td>
                     </tr>
@@ -331,49 +337,105 @@
 
     </aside>
 
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script>
         function showManitto() {
-            const card = document.getElementById("manitto-card");
+        const card = document.getElementById("manitto-card");
 
-            document.getElementById("card-title").innerText = "내 마니또";
-            document.getElementById("card-name").innerText = "이지민";
-            document.getElementById("card-mbti").innerText = "ENFP";
-            document.getElementById("card-want").innerText = "초콜릿 주세요";
+        $.ajax({
+            type: "GET",
+            url: "/dashboard/showManitto",
 
-            document.getElementById("manitti-extra").style.display = "none";
+            success: function(response) {
+                if (response.result === "success") {
+                    document.getElementById("card-title").innerText = "내 마니또";
+                    document.getElementById("card-name").innerText = response.user.name;
+                    document.getElementById("card-mbti").innerText = response.user.mbti;
+                    document.getElementById("card-want").innerText = response.user.want;
 
-            card.classList.add("flipped");
-        }
+                    document.getElementById("manitti-extra").style.display = "none";
+
+                    card.classList.add("flipped");
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    }
 
         function showManitti() {
             const card = document.getElementById("manitto-card");
 
-            document.getElementById("card-title").innerText = "내 마니띠";
-            document.getElementById("card-name").innerText = "현나";
-            document.getElementById("card-mbti").innerText = "ISTJ";
-            document.getElementById("card-want").innerText = "커피 주세요";
+            $.ajax({
+                type: "GET",
+                url: "/dashboard/showManitti",
 
-            document.getElementById("manitti-extra").style.display = "block";
+                success: function(response) {
+                    if (response.result === "success") {
+                        document.getElementById("card-title").innerText = "내 마니띠";
+                        document.getElementById("card-name").innerText = response.user.name;
+                        document.getElementById("card-mbti").innerText = response.user.mbti;
+                        document.getElementById("card-want").innerText = response.user.want;
 
-            card.classList.add("flipped");
+                        document.getElementById("manitti-extra").style.display = "block";
+
+                        card.classList.add("flipped");
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
         }
+        function shuffleManitto() {
+          $.ajax({
+              type: "POST",
+              url: "/api/shuffle",
+
+              success: function(response) {
+                  if (response.result === "success") {
+                      alert("마니또 배정이 완료되었습니다.");
+                  } else {
+                      alert("마니또 배정에 실패했습니다.");
+                  }
+              },
+
+              error: function() {
+                  alert("서버 요청 중 오류가 발생했습니다.");
+              }
+          });
+      }
     </script>
 
 <script>
     const app = Vue.createApp({
-
         data() {
             return {
                 ratings: 0
             }
+        },
+        methods: {
+            submitRating() {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/likes",
+                    data: {
+                        like: this.ratings
+                    },
+                    success: function(response) {
+                        if (response.result === "success") {
+                            alert("별점이 등록되었습니다.");
+                        } else {
+                            alert(response.message || "별점 등록에 실패했습니다.");
+                        }
+                    }
+                });
+            }
+            
         }
     });
 
-        app.mount('#app');
+    app.mount('#app');
 </script>
+
 
 </body>
 
