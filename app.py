@@ -159,7 +159,7 @@ def dashboard():
 ##############################
 
 
-# 좋아요 주기 / 완성기능 / JWT로 수정
+# 좋아요 주기 / 수정중 / JWT로 수정
 @app.route("/api/likes", methods=["POST"])
 @jwt_required()
 def likes():
@@ -209,7 +209,7 @@ def likes():
 #     return jsonify({"result": "success", "ranker": ranker[:5]})
 
 
-# 셔플하기 /success
+# 셔플하기 / success
 @app.route("/api/shuffle", methods=["POST"])
 # 관리자 인증방식 추가
 def shuffle():
@@ -236,7 +236,7 @@ def shuffle():
 ##############################
 
 
-# 마니또 조회하기 / 수정사항 / 기능 넘어가야 함
+# 마니또 조회하기 / 테스트중 / 기능 넘어가야 함
 @app.route("/dashboard/showManitto", methods=["GET"])
 @jwt_required()
 def showManitto():
@@ -284,7 +284,7 @@ def showManitti():
 ##############################
 
 
-# 마이페이지 보기 / 수정사항 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
+# 마이페이지 보기 / 테스트중 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
 @app.route("/dashboard/side/myPage", methods=["GET"])
 @jwt_required()
 def myPage():
@@ -303,7 +303,7 @@ def myPage():
     return jsonify({"result": "success", "user": user, "avg": avg})
 
 
-# 정보 업데이트 /
+# 정보 업데이트 / success
 @app.route("/dashboard/side/update", methods=["PUT"])
 @jwt_required()
 def update_user():
@@ -327,10 +327,14 @@ def update_user():
 # 유틸 함수
 ####################
 
-
-def has_target(username):
-    user = users.find_one({"username": username}, {"target_id": 1})
-    return user and user.get("target_id") is not None
+def get_target(username):
+    user = users.find_one(
+        {"username": username},
+        {"_id":0, "target_id":1}
+    )
+    if user is None:
+        return None
+    return user.get("target_id")
 
 
 # 더미데이터 테스트
