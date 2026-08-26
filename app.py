@@ -360,9 +360,38 @@ def get_target(username):
         return None
     return user.get("target_id")
 
+# 유저타입 / success
+def is_admin(username):
+    user = users.find_one({'username':username},{'_id':0,"role":1})
+    if user and user.get("role") == "admin":
+        return True
+    return False
 
-# 더미데이터 테스트
-# @app.route('/api/dummy')
+# 랭킹함수 / success
+def ranking():
+    user_list = list(
+        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+    )
+    
+    ranking = []
+    
+    for rank_user in user_list:
+        rating_sum = rank_user.get("rating_sum", 0)
+        rating_count = rank_user.get("rating_count", 0)
+    
+        if rating_count == 0:
+            avg = 0
+        else:
+            avg = rating_sum / rating_count
+    
+        ranking.append({"name": rank_user["name"], "ranking": avg})
+    
+    ranking.sort(key=lambda x: x["ranking"], reverse=True)
+     
+    return ranking
+
+# # 더미테스트
+# @app.route("/api/dummy")
 # def make_dummy():
 #     users.delete_many({})
 
