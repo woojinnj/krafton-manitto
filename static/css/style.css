@@ -276,12 +276,10 @@ a {
 ========================= */
 
 .flip {
-  width: 50vh;
-  height: 70vh;
-
-  perspective: 1100px;
-
-  margin-bottom: 30px;
+    width: min(50vh, 500px);
+    height: min(65vh, 650px);
+    perspective: 1100px;
+    margin-bottom: clamp(15px, 2vh, 30px);
 }
 
 .manitto-card {
@@ -626,6 +624,9 @@ a {
 
     border-left: 1px solid #ddd;
     color: var(--brand);
+
+    /* 사이드바 전체 스크롤 방지 */
+    overflow: hidden;
 }
 
 .profile-area {
@@ -722,16 +723,17 @@ a {
 /* 아래쪽 랭킹 영역 */
 .ranking-area {
     flex: 1;
+    min-height: 0;
 
     display: flex;
     flex-direction: column;
 
-    min-height: 0;
-
     background-color: white;
     color: var(--brand);
-}
 
+    /* ranking-area 자체는 스크롤 X */
+    overflow: hidden;
+}
 
 /* 랭킹 제목 */
 .ranking-title {
@@ -784,6 +786,84 @@ a {
 /* 내용 */
 .ranking-table td {
     font-weight: 400;
+}
+
+.ranking-scroll {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* =========================
+   대시보드 한 화면 고정
+========================= */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.dashboard-page {
+    width: 100%;
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 왼쪽 영역도 화면 높이를 넘지 않도록 */
+.dashboard-page .main-area {
+    height: 100vh;
+    min-height: 0;
+    padding: clamp(20px, 4vh, 60px);
+    overflow: hidden;
+}
+
+/* 사이드바 */
+.sidebar {
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 위쪽 개인정보 영역 */
+.profile-area {
+    flex-shrink: 0;
+    padding: clamp(15px, 2vh, 30px);
+}
+
+.profile-top {
+    margin-bottom: clamp(10px, 2vh, 25px);
+}
+
+.profile-info {
+    min-height: 0;
+    margin-bottom: clamp(8px, 1.5vh, 15px);
+    padding: clamp(8px, 1.5vh, 15px);
+}
+
+.profile-info p + p {
+    margin-top: clamp(7px, 1.5vh, 15px);
+}
+
+/* 랭킹이 남은 공간을 사용 */
+.ranking-area {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.ranking-title {
+    padding: clamp(10px, 1.7vh, 20px);
+}
+
+/* 5등까지 들어오도록 행 높이 자동 조절 */
+.ranking-table th,
+.ranking-table td {
+    padding: clamp(7px, 1.4vh, 15px) 8px;
 }
 
 /* 아래부터 수정하지 말아주세요 위에 작성해주세요*/
