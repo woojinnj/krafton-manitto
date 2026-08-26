@@ -1,6 +1,5 @@
 import random
 
-from bson.objectid import ObjectId
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_jwt_extended import (
     JWTManager,
@@ -140,12 +139,20 @@ def dashboard():
 @jwt_required()
 def likes():
     username = get_jwt_identity()
+    current_user = users.find_one({'username':username})
+
+    if current_user.get("target_id") is None:
+        return jsonify({
+        "result": "false",
+        "message": "아직 마니또가 배정되지 않았습니다."
+    })
+
     try:
         like = int(request.form.get("like"))
-        
+
     except (TypeError, ValueError):
         return jsonify({"result": "false"})
-    
+
     # 5보다 작게 받기 추가해야함
     if 1 <= like <= 5:
         users.update_one(
@@ -209,6 +216,13 @@ def shuffle():
 @jwt_required()
 def showManitto():
     username = get_jwt_identity()
+    current_user = users.find_one({'username':username})
+    
+    if current_user.get("target_id") is None:
+        return jsonify({
+        "result": "false",
+        "message": "아직 마니또가 배정되지 않았습니다."
+    })
     # 마니또 정보
     manitto = users.find_one({"target_id": username}, {"_id": 0, "name": 1})
 
@@ -220,11 +234,19 @@ def showManitto():
 @jwt_required()
 def showManitti():
     username = get_jwt_identity()
+    
     # 나의 정보
-    currentUser = users.find_one({"username": username})
+    current_user = users.find_one({"username": username})
+    
+    if current_user.get("target_id") is None:
+        return jsonify({
+        "result": "false",
+        "message": "아직 마니또가 배정되지 않았습니다."
+    })
+    
     # 마니띠
     manitti = users.find_one(
-        {"username": (currentUser["target_id"])}, {"_id": 0, "name": 1}
+        {"username": (current_user["target_id"])}, {"_id": 0, "name": 1}
     )
     return jsonify({"result": "success", "user": manitti})
 
@@ -243,6 +265,7 @@ def myPage():
         {"username": username},
         {"_id": 0, "name": 1, "mbti": 1, "rating_sum": 1, "want": 1, "rating_count": 1},
     )
+    
     count = user.get("rating_count", 0)
     if count == 0:
         avg = 0
@@ -275,6 +298,13 @@ def update_user():
 ####################
 # 유틸 함수
 ####################
+
+def has_target(username):
+    user = users.find_one(
+        {"username": username},
+        {"target_id":1}
+    )
+    return user and user.get("target_id") is not None
 
 
 # 더미데이터 테스트
