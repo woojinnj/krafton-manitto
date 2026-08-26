@@ -394,35 +394,66 @@ a {
   }
 }
 
-/* ===== 뒷면: 심플 ===== */
+/* ===== 카드 뒷면 ===== */
 .card-back {
-  background: linear-gradient(160deg, #0d1b2a, #12283d);
-  color: white;
+    background-image: url("../images/KakaoTalk_20260826_211903436.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-  border: 2px solid var(--card-1);
-  transform: rotateY(180deg);
+    border: 2px solid var(--card-1);
+    transform: rotateY(180deg);
 
-  padding: 30px;
+    /* Jungle 로고 아래에서 내용 시작 */
+    justify-content: flex-start;
+    align-items: center;
 
-  box-shadow: 0 0 25px rgba(5, 209, 130, 0.4);
+    padding: 150px 30px 30px;
+
+    color: white;
+
+    box-shadow: 0 0 25px rgba(5, 209, 130, 0.4);
 }
 
-.card-back h2 {
-  margin-bottom: 10px;
 
-  color: var(--card-1);
-  font-size: 1.6rem;
-  font-weight: 700;
+/* 내 마니또 / 내 마니띠 */
+#card-title {
+    color: white;
+
+    font-size: 32px;
+    font-weight: 700;
+
+    margin: 0 0 18px 0;
 }
 
+
+/* 이름 / MBTI / WANT */
 .card-back p {
-  font-size: 1.1rem;
-  color: #9fb3c8;
+    color: white;
+
+    font-size: 24px;
+
+    /* 정보들 사이 간격 */
+    margin: 6px 0;
+
+    line-height: 1.3;
 }
 
-.card-back p span {
-  font-weight: 700;
-  color: white;
+
+/* 실제 DB에서 들어오는 값 */
+#card-name,
+#card-mbti,
+#card-want {
+    color: white;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* 별점 영역 */
+#manitti-extra {
+    margin-top: 15px;
 }
 
 /* =========================
@@ -587,23 +618,25 @@ a {
 ========================= */
 
 .sidebar {
-  width: 25%;
-  min-height: 100vh;
+    width: clamp(320px, 25vw, 420px);
+    height: 100vh;
 
-  border-left: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
 
-  color: var(--brand);
+    border-left: 1px solid #ddd;
+    color: var(--brand);
 }
 
 .profile-area {
-  min-height: 360px;
+    flex: 0 0 auto;
 
-  padding: 30px;
+    padding: clamp(20px, 2vw, 30px);
 
-  background-image: url("../images/3f494af.webp");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    background-image: url("../images/3f494af.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .profile-top {
@@ -686,54 +719,71 @@ a {
    랭킹
 ========================= */
 
+/* 아래쪽 랭킹 영역 */
 .ranking-area {
-  background-color: white;
+    flex: 1;
 
-  color: var(--brand);
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+
+    background-color: white;
+    color: var(--brand);
 }
 
+
+/* 랭킹 제목 */
 .ranking-title {
-  padding: 20px;
+    flex-shrink: 0;
 
-  text-align: center;
+    padding: clamp(14px, 2vh, 20px);
 
-  font-size: 24px;
-  font-weight: 900;
+    text-align: center;
 
-  letter-spacing: 2px;
+    font-size: clamp(18px, 1.6vw, 24px);
+    font-weight: 900;
 
-  color: #f5a000;
+    letter-spacing: 2px;
 
-  border-bottom: 1px solid #ddd;
+    color: #f5a000;
+
+    border-bottom: 1px solid #ddd;
 }
 
+
+/* 테이블 */
 .ranking-table {
-  width: 100%;
+    width: 100%;
 
-  border-collapse: collapse;
+    border-collapse: collapse;
+    table-layout: fixed;
 
-  color: var(--brand);
-
-  text-align: center;
+    text-align: center;
 }
 
+
+/* 화면 높이에 따라 행 크기도 변화 */
 .ranking-table th,
 .ranking-table td {
-  padding: 15px;
+    padding: clamp(10px, 1.8vh, 15px) 8px;
 
-  border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 
-  font-family: "Noto Sans KR", sans-serif;
+    font-size: clamp(14px, 1.2vw, 16px);
 }
 
+
+/* 헤더 */
 .ranking-table th {
-  background-color: #f5f5f5;
-
-  font-weight: 700;
+    background-color: #f5f5f5;
+    font-weight: 700;
 }
 
+
+/* 내용 */
 .ranking-table td {
-  font-weight: 400;
+    font-weight: 400;
 }
 
 /* 아래부터 수정하지 말아주세요 위에 작성해주세요*/
