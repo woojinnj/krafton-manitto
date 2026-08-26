@@ -36,21 +36,20 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         user = users.find_one({"username": username})
-        
+
         if user and check_password_hash(user["password"], password):
             access_token = create_access_token(identity=username)
             response = redirect(url_for("dashboard"))
             set_access_cookies(response, access_token)
             return response
-        
+
         else:
             return render_template(
-                'login.html',
-                error="아이디 또는 비밀번호가 올바르지 않습니다."
+                "login.html", error="아이디 또는 비밀번호가 올바르지 않습니다."
             )
     return render_template("login.html")
 
@@ -58,27 +57,51 @@ def login():
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        name = request.form["name"]
-        want = request.form["want"]
-        mbti = request.form["mbti"]
+        username = request.form.get("username")
+        password = request.form.get("password")
+        name = request.form.get("name")
+        want = request.form.get("want")
+        mbti = request.form.get("mbti")
 
         if not username or not password or not name or not want or not mbti:
-            return render_template("signup.html", error="모든 항목을 입력해주세요.")
+            return render_template(
+                "signup.html",
+                error="모든 항목을 입력해주세요.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
+            )
 
         existing_user = users.find_one({"username": username})
         if existing_user:
-            return render_template("signup.html", error="이미 존재하는 아이디입니다.")
+            return render_template(
+                "signup.html",
+                error="이미 존재하는 아이디입니다.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
+            )
 
         if len(username) < 4:
             return render_template(
-                "signup.html", error="아이디는 4글자 이상이어야 합니다."
+                "signup.html",
+                error="아이디는 4글자 이상이어야 합니다.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
             )
 
         if len(password) < 8:
             return render_template(
-                "signup.html", error="비밀번호는 8글자 이상이어야 합니다."
+                "signup.html",
+                error="비밀번호는 8글자 이상이어야 합니다.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
             )
 
         hashed_password = generate_password_hash(password)
@@ -102,8 +125,8 @@ def signup():
 @app.route("/dashboard")
 @jwt_required()
 def dashboard():
-    username=get_jwt_identity()
-    return render_template("dashboard.html",username=username)
+    username = get_jwt_identity()
+    return render_template("dashboard.html", username=username)
 
 
 ##############################
@@ -171,7 +194,7 @@ def shuffle():
     return jsonify({"result": "false"})
 
 ##############################
-#대시보드 메인화면 기능
+# 대시보드 메인화면 기능
 ##############################
 
 # 마니또 조회하기 / 수정사항 / 기능 넘어가야 함
@@ -185,6 +208,7 @@ def showManitto():
 
     return jsonify({'result': 'success', 'user': manitto})
 
+    return jsonify({"result": "success", "user": manitto})
 
 
 # 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
@@ -197,12 +221,13 @@ def showManitti():
     #마니띠
     manitti = users.find_one({'username':(currentUser['targetId'])})
 
-    return jsonify({'result': 'success', 'user': manitti})
+    manitti = getUserId(me["targetId"])  # 마니띠
 
+    return jsonify({"result": "success", "user": manitti})
 
 
 ##############################
-#사이드바 기능
+# 사이드바 기능
 ##############################
 
 # 마이페이지 보기 / 수정사항 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
@@ -223,9 +248,12 @@ def update_user():
     
     # 들어온 값만 dictionary
     update_data = {}
-    if 'name' in request.form: update_data['name'] = request.form['name']
-    if 'mbti' in request.form: update_data['mbti'] = request.form['mbti']
-    if 'want' in request.form: update_data['want'] = request.form['want']
+    if "name" in request.form:
+        update_data["name"] = request.form["name"]
+    if "mbti" in request.form:
+        update_data["mbti"] = request.form["mbti"]
+    if "want" in request.form:
+        update_data["want"] = request.form["want"]
 
     # update_data에 포함된 필드만 수정
     users.update_one({'username': username}, {'$set': update_data})
@@ -234,11 +262,6 @@ def update_user():
 ####################
 # 유틸 함수
 ####################
-
-
-
-
-
 
 
 
@@ -264,5 +287,5 @@ def update_user():
 #     users.insert_many(dummy_users)   # 5명 한 번에 삽입
 #     return jsonify({"result": "success", "inserted": len(dummy_users)})
 
-if __name__=='__main__':
+if __name__ == "__main__":
     app.run(debug=True)
