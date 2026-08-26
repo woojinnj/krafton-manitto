@@ -28,6 +28,8 @@ db = client["manitto"]
 users = db["users"]
 users.create_index("username", unique=True)
 
+game_status = db["game_status"]
+
 
 @app.route("/")
 def index():
@@ -254,6 +256,25 @@ def shuffle():
     # 셔플하기 실패
     return jsonify({"result": "false"})
 
+# 마니또 공개 토글
+@app.route("/api/toggle-open", methods=["POST"])
+@jwt_required()
+def toggle_open():
+    username = get_jwt_identity()
+
+    if not is_admin(username):
+        return jsonify({"result": "false", "message": "관리자 권한이 필요합니다."}), 403
+
+    new_status = not get_game_status()          # 현재값 뒤집기
+    game_status.update_one(
+        {"_id": "current_status"},
+        {"$set": {"is_open": new_status}},
+        upsert=True
+    )
+
+    return jsonify({"result": "success", "is_open": new_status})
+    
+
 
 ##############################
 # 대시보드 메인화면 기능
@@ -265,6 +286,8 @@ def shuffle():
 @jwt_required()
 def showManitto():
     username = get_jwt_identity()
+    if not get_game_status():
+        return jsonify({'result':False,"message": "아직 공개되지 않았습니다."})
 
     current_user = users.find_one({"username": username})
 
@@ -286,7 +309,9 @@ def showManitto():
 @jwt_required()
 def showManitti():
     username = get_jwt_identity()
-
+    if not get_game_status():
+        return jsonify({'result':False,"message": "아직 공개되지 않았습니다."})
+    
     current_user = users.find_one({"username": username})
 
     if current_user.get("target_id") is None:
@@ -308,7 +333,7 @@ def showManitti():
 ##############################
 
 
-# 마이페이지 보기 / 테스트중 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
+# 마이페이지 보기 / success
 @app.route("/dashboard/side/myPage", methods=["GET"])
 @jwt_required()
 def myPage():
@@ -389,6 +414,22 @@ def ranking():
     ranking.sort(key=lambda x: x["ranking"], reverse=True)
      
     return ranking
+
+# 게임 상태 초기 설정 / success
+def init_game_status():
+    status = game_status.find_one({"_id": "current_status"})
+    if status is None:
+        game_status.insert_one({"_id": "current_status", "is_open": False})
+        return None
+    return status
+
+# 게임 상태 조회
+def get_game_status():
+    status = game_status.find_one({"_id": "current_status"})
+    if status is None:
+        return False
+    return status.get("is_open", False)
+
 
 # # 더미테스트
 # @app.route("/api/dummy")
