@@ -1,3 +1,14 @@
+// 모달 열기 유틸 함수
+function showAlert(message) {
+  document.getElementById("modal-message").innerText = message;
+  document.getElementById("custom-modal").style.display = "flex";
+}
+
+// 모달 닫기 유틸 함수
+function closeModal() {
+  document.getElementById("custom-modal").style.display = "none";
+}
+
 function showManitto() {
   loadCard("/dashboard/showManitto", "내 마니또", false);
 }
@@ -11,7 +22,7 @@ function loadCard(url, title, showRating) {
     .then((response) => response.json())
     .then((data) => {
       if (data.result !== "success") {
-        alert(data.message || "사용자 정보를 불러오지 못했습니다.");
+        showAlert(data.message || "사용자 정보를 불러오지 못했습니다.");
         return;
       }
 
@@ -31,7 +42,7 @@ function loadCard(url, title, showRating) {
     })
     .catch((error) => {
       console.error(error);
-      alert("사용자 정보를 불러오지 못했습니다.");
+      showAlert("사용자 정보를 불러오지 못했습니다.");
     });
 }
 
@@ -39,7 +50,7 @@ function submitRating() {
   const selectedRating = document.querySelector('input[name="rating"]:checked');
 
   if (!selectedRating) {
-    alert("별점을 선택해주세요.");
+    showAlert("별점을 선택해주세요.");
     return;
   }
 
@@ -56,16 +67,16 @@ function submitRating() {
     .then((response) => response.json())
     .then((data) => {
       if (data.result === "success") {
-        alert("별점이 등록되었습니다.");
+        showAlert("별점이 등록되었습니다.");
         location.reload();
         return;
       }
 
-      alert(data.message || "별점 등록에 실패했습니다.");
+      showAlert(data.message || "별점 등록에 실패했습니다.");
     })
     .catch((error) => {
       console.error(error);
-      alert("별점 등록 중 오류가 발생했습니다.");
+      showAlert("별점 등록 중 오류가 발생했습니다.");
     });
 }
 
@@ -74,16 +85,18 @@ function handleShuffle() {
     .then((response) => response.json())
     .then((data) => {
       if (data.result === "success") {
-        alert("마니또 배정이 완료되었습니다. 공개 상태는 비공개로 초기화되었습니다.");
+        showAlert(
+          "마니또 배정이 완료되었습니다. 공개 상태는 비공개로 초기화되었습니다.",
+        );
         updateGameStatus(false);
         return;
       }
 
-      alert(data.message || "마니또 배정에 실패했습니다.");
+      showAlert(data.message || "마니또 배정에 실패했습니다.");
     })
     .catch((error) => {
       console.error(error);
-      alert("마니또 배정 중 오류가 발생했습니다.");
+      showAlert("마니또 배정 중 오류가 발생했습니다.");
     });
 }
 
@@ -93,15 +106,17 @@ function handleToggleOpen() {
     .then((data) => {
       if (data.result === "success") {
         updateGameStatus(data.is_open);
-        alert(`마니또 상태가 ${data.is_open ? "공개" : "비공개"}로 전환되었습니다.`);
+        showAlert(
+          `마니또 상태가 ${data.is_open ? "공개" : "비공개"}로 전환되었습니다.`,
+        );
         return;
       }
 
-      alert(data.message || "상태 전환에 실패했습니다.");
+      showAlert(data.message || "상태 전환에 실패했습니다.");
     })
     .catch((error) => {
       console.error(error);
-      alert("상태 전환 중 오류가 발생했습니다.");
+      showAlert("상태 전환 중 오류가 발생했습니다.");
     });
 }
 
