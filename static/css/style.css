@@ -1,647 +1,769 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap");
 
+:root {
+  /* 브랜드 (전역 포인트 컬러) */
+  --brand: #ff6b00;
+  --brand-hover: #d9a441;
 
+  /* 카드 앞면 */
+  --card-glow: #8cffc8;
+  --card-1: #05d182;
+  --card-2: #038a52;
+  --card-3: #026b40;
+
+  /* 카드 뒷면 */
+  --back-1: #0d1b2a;
+  --back-2: #12283d;
+  --back-text: #9fb3c8;
+
+  /* 중립 */
+  --surface: #ffffff;
+  --surface-alt: #f5f5f5;
+  --line: #dddddd;
+}
 /* =========================
    공통
 ========================= */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    min-height: 100vh;
+  min-height: 100vh;
 
-    font-family: "Noto Sans KR", sans-serif;
-    color: #F2AA00;
-    font-weight: 400;
+  font-family: "Noto Sans KR", sans-serif;
+  color: var(--brand);
+  font-weight: 400;
 }
 
 button,
 input,
 select {
-    font-family: "Noto Sans KR", sans-serif;
-    color: #F2AA00;
+  font-family: "Noto Sans KR", sans-serif;
+  color: var(--brand);
 }
 
 a {
-    color: #F2AA00;
-    text-decoration: none;
+  color: var(--brand);
+  text-decoration: none;
 }
-
 
 /* =========================
    INDEX
 ========================= */
 
 .index-page {
-    background-image: url("../images/3f494af.webp");
+  background-image: url("../images/3f494af.webp");
 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .landing-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .title {
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: clamp(80px, 12vw, 200px);
-    font-weight: 900;
+  font-size: clamp(80px, 12vw, 200px);
+  font-weight: 900;
 
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 
-    text-align: center;
+  text-align: center;
 }
 
 .subtitle {
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: clamp(60px, 9vw, 150px);
-    font-weight: 900;
+  font-size: clamp(60px, 9vw, 150px);
+  font-weight: 900;
 
-    margin-bottom: 100px;
+  margin-bottom: 100px;
 
-    text-align: center;
+  text-align: center;
 }
 
 .index-page .button-area {
-    width: 400px;
+  width: 400px;
 
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 
-    gap: 30px;
+  gap: 30px;
 }
 
 .index-button {
-    width: 160px;
-    height: 60px;
+  width: 160px;
+  height: 60px;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    border: 2px solid white;
-    border-radius: 8px;
+  border: 2px solid white;
+  border-radius: 8px;
 
-    color: white;
+  color: white;
 
-    font-size: 20px;
-    font-weight: 700;
+  font-size: 20px;
+  font-weight: 700;
 
-    transition: 0.2s;
+  transition: 0.2s;
 }
 
 .index-button:hover {
-    background-color: white;
-    color: #F2AA00;
+  background-color: white;
+  color: var(--brand);
 }
-
 
 /* =========================
    LOGIN / SIGNUP 공통
 ========================= */
 
 .auth-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    background-image: url("../images/3f494af.webp");
-    background-size: cover;
-    background-position: center;
+  background-image: url("../images/3f494af.webp");
+  background-size: cover;
+  background-position: center;
 }
 
 .auth-container {
-    width: 380px;
+  width: 380px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
 
 /* 로고 */
 
 .button-logo {
-    margin-bottom: 50px;
+  margin-bottom: 50px;
 }
 
 .index-link {
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: 42px;
-    font-weight: 900;
+  font-size: 42px;
+  font-weight: 900;
 
-    letter-spacing: -3px;
+  letter-spacing: -3px;
 }
 
 .index-link:visited {
-    color: #F2AA00;
+  color: var(--brand);
 }
-
 
 /* Form */
 
 .auth-form {
-    width: 100%;
+  width: 100%;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    gap: 15px;
+  gap: 15px;
 }
 
 .auth-input,
 .auth-select {
-    width: 100%;
-    height: 55px;
+  width: 100%;
+  height: 55px;
 
-    padding: 10px 15px;
+  padding: 10px 15px;
 
-    border: 1px solid #ddd;
+  border: 1px solid #ddd;
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: 18px;
-    font-weight: 400;
+  font-size: 18px;
+  font-weight: 400;
 }
-
 
 /* placeholder도 통일 */
 
 .auth-input::placeholder {
-    color: #F2AA00;
-    opacity: 0.6;
+  color: var(--brand);
+  opacity: 0.6;
 }
-
 
 /* 로그인 / 회원가입 버튼 */
 
 .auth-button {
-    width: 100%;
-    height: 65px;
+  width: 100%;
+  height: 65px;
 
-    margin-top: 20px;
+  margin-top: 20px;
 
-    background-color: white;
+  background-color: white;
 
-    border: 4px solid #F2AA00;
+  border: 4px solid var(--brand);
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: 28px;
-    font-weight: 700;
+  font-size: 28px;
+  font-weight: 700;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .auth-button:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
-
 
 /* 오류 */
 
 .form-error {
-    width: 100%;
+  width: 100%;
 
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 
-    color: #d93025;
+  color: #d93025;
 
-    text-align: center;
+  text-align: center;
 
-    font-size: 14px;
-    font-weight: 400;
+  font-size: 14px;
+  font-weight: 400;
 }
-
 
 /* =========================
    DASHBOARD
 ========================= */
 
 .dashboard-page {
-    display: flex;
+  display: flex;
 
-    min-height: 100vh;
+  min-height: 100vh;
 
-    color: #F2AA00;
+  color: var(--brand);
 }
-
 
 /* 왼쪽 영역 */
 
 .dashboard-page .main-area {
-    width: 75%;
-    padding: 60px;
+  width: 75%;
+  padding: 60px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    background-image: url("../images/3f494af.webp");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url("../images/3f494af.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-
 
 /* =========================
    Flip 카드
 ========================= */
 
 .flip {
-    width: 500px;
-    height: 500px;
+  width: 60vh;
+  height: 70vh;
 
-    perspective: 1100px;
+  perspective: 1100px;
 
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .manitto-card {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    position: relative;
+  position: relative;
 
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.manitto-card.flipped {
+  transform: rotateY(180deg);
 }
 
 .card-front,
 .card-back {
-    position: absolute;
+  position: absolute;
 
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    backface-visibility: hidden;
+  backface-visibility: hidden;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
 
-    font-family: "Noto Sans KR", sans-serif;
+  border-radius: 20px;
+
+  font-family: "Noto Sans KR", sans-serif;
 }
 
+/* ===== 앞면: 미공개 ===== */
 .card-front {
-    background:
-        linear-gradient(
-            rgba(242, 170, 0, 0.92),
-            rgba(242, 170, 0, 0.92)
-        ),
-        url("../images/jungle-leaves.png");
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(140, 255, 200, 0.55),
+      transparent 60%
+    ),
+    linear-gradient(160deg, var(--card-1), #038a52 60%, #026b40);
 
-    background-size: cover;
-    background-position: center;
+  color: white;
 
-    color: white;
-
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 40px rgba(5, 209, 130, 0.55),
+    inset 0 0 60px rgba(0, 0, 0, 0.25);
 }
 
-.card-back {
-    background-color: #fffdf4;
-    color: #F2AA00;
-
-    border: 2px solid #F2AA00;
-    border-radius: 20px;
-
-    transform: rotateY(180deg);
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-
-    transform: rotateY(180deg);
+.card-front h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* 물음표 — HTML 수정 없이 h2 위에 얹기 */
+.card-front .question,
 .card-front h2,
+.card-front .hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  margin: 0;
+  text-align: center;
+}
+
+.card-front .question {
+  top: 30%;
+
+  font-size: 20vh;
+  line-height: 1;
+
+  text-shadow:
+    0 0 20px white,
+    0 0 50px var(--card-glow);
+
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.card-front h2 {
+  top: 75%;
+
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.card-front .hint {
+  top: 83%;
+
+  font-size: 1.5rem;
+  opacity: 1;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 0.8;
+  }
+}
+
+/* ===== 뒷면: 심플 ===== */
+.card-back {
+  background: linear-gradient(160deg, #0d1b2a, #12283d);
+  color: white;
+
+  border: 2px solid var(--card-1);
+  transform: rotateY(180deg);
+
+  padding: 30px;
+
+  box-shadow: 0 0 25px rgba(5, 209, 130, 0.4);
+}
+
 .card-back h2 {
-    font-weight: 700;
+  margin-bottom: 10px;
+
+  color: var(--card-1);
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
-.manitto-card.flipped {
-    transform: rotateY(180deg);
+.card-back p {
+  font-size: 1.1rem;
+  color: #9fb3c8;
 }
 
+.card-back p span {
+  font-weight: 700;
+  color: white;
+}
 
 /* =========================
    마니또 / 마니띠 / 배정 버튼
 ========================= */
 
 .dashboard-page .button-area {
-    display: flex;
+  display: flex;
 
-    gap: 100px;
+  gap: 100px;
 }
 
 .dashboard-page .button-area button {
-    width: 200px;
-    height: 60px;
+  width: 200px;
+  height: 60px;
 
-    background-color: white;
-    background-size: cover;
-    background-position: center;
+  background-color: white;
+  background-size: cover;
+  background-position: center;
 
-    border: 1px solid #F2AA00;
+  border: 1px solid var(--brand);
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: 20px;
-    font-weight: 700;
+  font-size: 20px;
+  font-weight: 700;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .dashboard-page .button-area button:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
-
 
 /* =========================
    관리자 제어판
 ========================= */
 
 .admin-control-panel {
-    margin-top: 24px;
-    padding: 20px;
+  margin-top: 24px;
+  padding: 20px;
 
-    background-color: rgba(255, 255, 255, 0.94);
-    border: 1px solid #F2AA00;
-    border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--brand);
+  border-radius: 12px;
 
-    color: #F2AA00;
-    text-align: center;
+  color: var(--brand);
+  text-align: center;
 }
 
 .admin-control-panel h2 {
-    margin-bottom: 8px;
-    font-size: 20px;
+  margin-bottom: 8px;
+  font-size: 20px;
 }
 
 .admin-control-panel p {
-    margin-bottom: 14px;
+  margin-bottom: 14px;
 }
 
 .admin-action-button {
-    min-width: 180px;
-    margin: 4px;
-    padding: 10px 16px;
+  min-width: 180px;
+  margin: 4px;
+  padding: 10px 16px;
 
-    background-color: white;
-    border: 1px solid #F2AA00;
+  background-color: white;
+  border: 1px solid var(--brand);
 
-    color: #F2AA00;
-    font-weight: 700;
+  color: var(--brand);
+  font-weight: 700;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .admin-action-button:hover {
-    background-color: #fff6dd;
+  background-color: var(--brand-hover);
 }
-
 
 /* =========================
    별점
 ========================= */
 
 #manitti-extra {
-    margin-top: 15px;
-    text-align: center;
+  margin-top: 15px;
+  text-align: center;
 }
 
 .rating-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    gap: 15px;
+  gap: 15px;
 }
 
 .star-rating {
-    width: 5em;
+  width: 5em;
 
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
 
-    font-size: 45px;
-    line-height: 1;
+  font-size: 45px;
+  line-height: 1;
 }
 
 .star-rating input {
-    display: none;
+  display: none;
 }
 
 .star-rating label {
-    cursor: pointer;
+  cursor: pointer;
 
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: #F2AA00;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: var(--brand);
 }
-
 
 /* 마우스를 올렸을 때 */
 
 .star-rating label:hover,
 .star-rating label:hover ~ label {
-    -webkit-text-fill-color: #fff58c;
+  -webkit-text-fill-color: #fff58c;
 }
-
 
 /* 선택된 별 */
 
 .star-rating input:checked ~ label {
-    -webkit-text-fill-color: gold;
+  -webkit-text-fill-color: gold;
 }
-
 
 /* 이모티콘 */
 
 #rating-emoji {
-    display: inline-block;
+  display: inline-block;
 
-    min-width: 45px;
+  min-width: 45px;
 
-    font-size: 35px;
+  font-size: 35px;
 }
-
 
 /* 별점 등록 버튼 */
 
 .rating-submit-button {
-    margin-top: 10px;
+  margin-top: 10px;
 
-    padding: 7px 15px;
+  padding: 7px 15px;
 
-    background-color: white;
+  background-color: white;
 
-    border: 1px solid #F2AA00;
+  border: 1px solid var(--brand);
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: 16px;
-    font-weight: 700;
+  font-size: 16px;
+  font-weight: 700;
 
-    cursor: pointer;
+  cursor: pointer;
 }
-
 
 /* =========================
    오른쪽 사이드바
 ========================= */
 
 .sidebar {
-    width: 25%;
-    min-height: 100vh;
+  width: 25%;
+  min-height: 100vh;
 
-    border-left: 1px solid #ddd;
+  border-left: 1px solid #ddd;
 
-    color: #F2AA00;
+  color: var(--brand);
 }
 
 .profile-area {
-    min-height: 360px;
+  min-height: 360px;
 
-    padding: 30px;
+  padding: 30px;
 
-    background-image: url("../images/3f494af.webp");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url("../images/3f494af.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .profile-top {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    gap: 25px;
+  gap: 25px;
 
-    margin-bottom: 25px;
+  margin-bottom: 25px;
 }
 
 .username-box,
 .name-box {
-    flex: 1;
+  flex: 1;
 
-    min-width: 0;
-    height: 50px;
+  min-width: 0;
+  height: 50px;
 
-    padding: 10px;
+  padding: 10px;
 
-    background-color: white;
+  background-color: white;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    text-align: center;
+  text-align: center;
 
-    font-size: 18px;
-    font-weight: 700;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .profile-info {
-    min-height: 90px;
+  min-height: 90px;
 
-    margin-bottom: 15px;
-    padding: 15px;
+  margin-bottom: 15px;
+  padding: 15px;
 
-    background-color: white;
+  background-color: white;
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    text-align: center;
+  text-align: center;
 
-    font-size: 18px;
-    font-weight: 400;
+  font-size: 18px;
+  font-weight: 400;
 }
 
 .profile-info p + p {
-    margin-top: 15px;
+  margin-top: 15px;
 }
-
 
 /* 로그아웃 */
 
 .logout-link {
-    width: 160px;
-    height: 45px;
+  width: 160px;
+  height: 45px;
 
-    margin: 0 auto;
+  margin: 0 auto;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    background-color: white;
+  background-color: white;
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    font-size: 18px;
-    font-weight: 700;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .logout-link:visited {
-    color: #F2AA00;
+  color: var(--brand);
 }
-
 
 /* =========================
    랭킹
 ========================= */
 
 .ranking-area {
-    background-color: white;
+  background-color: white;
 
-    color: #F2AA00;
+  color: var(--brand);
 }
 
 .ranking-table {
-    width: 100%;
+  width: 100%;
 
-    border-collapse: collapse;
+  border-collapse: collapse;
 
-    color: #F2AA00;
+  color: var(--brand);
 
-    text-align: center;
+  text-align: center;
 }
 
 .ranking-table th,
 .ranking-table td {
-    padding: 15px;
+  padding: 15px;
 
-    border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 
-    font-family: "Noto Sans KR", sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 .ranking-table th {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .ranking-table td {
-    font-weight: 400;
+  font-weight: 400;
+}
+
+/* 아래부터 수정하지 말아주세요 위에 작성해주세요*/
+
+/* 배경 어둡게 처리 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 창 상자 */
+.modal-content {
+  background-color: #ffffff;
+  padding: 24px 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-width: 300px;
+}
+
+#modal-message {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #333333;
+}
+
+/* 확인 버튼 */
+.modal-close-btn {
+  background-color: var(--card-1); /* 원하는 포인트 색상 */
+  color: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-close-btn:hover {
+  background-color: #1d494c;
 }

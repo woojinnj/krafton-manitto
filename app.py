@@ -205,27 +205,6 @@ def likes():
 
     return jsonify({"result": "false", "message": "별점은 1점부터 5점까지 가능합니다."}), 400
 
-# # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
-# @app.route("/api/sort", methods=["GET"])
-# def sort():
-#     userList = list(
-#         users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
-#     )
-
-#     ranker = []
-#     for user in userList:
-#         name = user.get("name")
-#         rating_sum = user.get("rating_sum", 0)
-#         count = user.get("rating_count", 0)
-#         if count != 0:
-#             avg = rating_sum / count
-#             ranker.append({"name": name, "avg": avg})
-#     # 파이썬 정렬 함수
-#     ranker.sort(key=lambda x: x["avg"], reverse=True)
-
-#     return jsonify({"result": "success", "ranker": ranker[:5]})
-
-
 # 셔플하기 / success
 @app.route("/api/shuffle", methods=["POST"])
 @jwt_required()
@@ -261,7 +240,7 @@ def shuffle():
         {"result": "false", "message": "마니또 배정에는 최소 3명이 필요합니다."}
     ), 400
 
-# 마니또 공개 토글
+# 마니또 공개 토글 / success
 @app.route("/api/toggle-open", methods=["POST"])
 @jwt_required()
 def toggle_open():
@@ -285,7 +264,7 @@ def toggle_open():
 ##############################
 
 
-# 마니또 조회하기 / 테스트중 / 기능 넘어가야 함
+# 마니또 조회하기 / success
 @app.route("/dashboard/showManitto", methods=["GET"])
 @jwt_required()
 def showManitto():
@@ -313,7 +292,7 @@ def showManitto():
 
     return jsonify({"result": "success", "user": manitto})
 
-# 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
+# 마니띠 조회하기 / success
 @app.route("/dashboard/showManitti", methods=["GET"])
 @jwt_required()
 def showManitti():
@@ -393,6 +372,7 @@ def update_user():
 # 유틸 함수
 ####################
 
+# 타겟 / succcess
 def get_target(username):
     user = users.find_one({"username": username}, {"_id": 0, "target_id": 1})
     if user is None:
