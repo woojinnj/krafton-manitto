@@ -311,7 +311,7 @@ def get_target(username):
 
 # 유저타입 / success
 def is_admin(username):
-    user = users.findone({'username':username},{'_id':0,"role":1})
+    user = users.find_one({'username':username},{'_id':0,"role":1})
     if user and user.get("role") == "admin":
         return True
     return False
