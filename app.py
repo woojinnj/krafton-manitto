@@ -300,8 +300,8 @@ def toggle_open():
 @jwt_required()
 def showManitto():
     username = get_jwt_identity()
-    if not get_game_status():
-        return jsonify({"result": "false", "message": "아직 공개되지 않았습니다."})
+    # if not get_game_status():
+    #     return jsonify({"result": "false", "message": "아직 공개되지 않았습니다."})
 
     current_user = users.find_one({"username": username})
 
