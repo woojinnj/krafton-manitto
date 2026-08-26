@@ -3,74 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>index</title>
+    <title>index_frontend</title>
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        min-height: 100vh;
-        background-color: #c8ff8c;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        font-family: Arial, sans-serif;
-      }
-
-      .landing-container {
-        text-align: center;
-      }
-
-      .title {
-        font-size: 70px;
-        font-weight: bold;
-        margin-bottom: 20px;
-      }
-
-      .subtitle {
-        font-size: 45px;
-        font-weight: bold;
-        margin-bottom: 100px;
-      }
-
-      .button-area {
-        display: flex;
-        gap: 100px;
-        justify-content: center;
-      }
-
-      .button-area a {
-        display: inline-block;
-        width: 220px;
-        padding: 15px;
-
-        border: 6px solid black;
-        background-color: transparent;
-
-        color: black;
-        text-decoration: none;
-        font-size: 45px;
-        font-weight: bold;
-      }
-    </style>
+    <!-- 폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- 부트스트랩 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- 스타일시트 -->
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style></style>
   </head>
 
   <body>
     <div class="landing-container">
-      <h1 class="title">Jungle</h1>
-
-      <div class="subtitle">마니또</div>
+      <div>
+        <h1 class="title">Jungle</h1>
+        <h1 class="subtitle">ㅁㄴㄸ</h1>
+      </div>
 
       <div class="button-area">
-        <a href="/login"> 로그인 </a>
+        <a
+          href="/login"
+          class="btn btn-outline-light btn-lg py-3 fw-bold rounded-3"
+        >
+          로그인
+        </a>
 
-        <a href="/signup"> 회원가입 </a>
+        <a
+          href="/signup"
+          class="btn btn-outline-light btn-lg py-3 fw-bold rounded-3"
+        >
+          회원가입
+        </a>
       </div>
     </div>
   </body>
