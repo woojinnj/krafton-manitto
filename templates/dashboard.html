@@ -89,15 +89,14 @@
         <button type="button" onclick="showManitti()">마니띠</button>
       </div>
       {% if is_admin %}
-      <div
-        class="admin-control-panel p-3 mb-4 bg-light rounded-3 border text-center"
-      >
-        <h5 class="fw-bold mb-3">관리자 제어판</h5>
+      <section class="admin-control-panel" aria-label="관리자 제어판">
+        <h2>관리자 제어판</h2>
+        <p id="game-status">현재 상태: {{ "공개" if is_open else "비공개" }}</p>
 
         <!-- 셔플 버튼 -->
         <button
           type="button"
-          class="btn btn-warning me-2"
+          class="admin-action-button"
           onclick="handleShuffle()"
         >
           마니또 셔플 실행
@@ -106,12 +105,12 @@
         <!-- 공개/숨김 토글 버튼 -->
         <button
           type="button"
-          class="btn btn-primary"
+          class="admin-action-button"
           onclick="handleToggleOpen()"
         >
           마니또 공개 여부 전환
         </button>
-      </div>
+      </section>
       {% endif %}
     </main>
 

@@ -375,6 +375,50 @@ a {
 
 
 /* =========================
+   관리자 제어판
+========================= */
+
+.admin-control-panel {
+    margin-top: 24px;
+    padding: 20px;
+
+    background-color: rgba(255, 255, 255, 0.94);
+    border: 1px solid #F2AA00;
+    border-radius: 12px;
+
+    color: #F2AA00;
+    text-align: center;
+}
+
+.admin-control-panel h2 {
+    margin-bottom: 8px;
+    font-size: 20px;
+}
+
+.admin-control-panel p {
+    margin-bottom: 14px;
+}
+
+.admin-action-button {
+    min-width: 180px;
+    margin: 4px;
+    padding: 10px 16px;
+
+    background-color: white;
+    border: 1px solid #F2AA00;
+
+    color: #F2AA00;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.admin-action-button:hover {
+    background-color: #fff6dd;
+}
+
+
+/* =========================
    별점
 ========================= */
 

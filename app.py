@@ -119,7 +119,8 @@ def signup():
                 "rating_sum": 0,
                 "rating_count": 0,
                 "target_id": None,
-                "rated":False,
+                "rated": False,
+                "role": "user",
             }
         )
 
@@ -137,29 +138,19 @@ def logout():
 def dashboard():
     username = get_jwt_identity()
 
-    user = db.users.find_one({"username": username})
-
-    user_list = list(
-        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
-    )
-
-    ranking = []
-
-    for rank_user in user_list:
-        rating_sum = rank_user.get("rating_sum", 0)
-        rating_count = rank_user.get("rating_count", 0)
-
-        if rating_count == 0:
-            avg = 0
-        else:
-            avg = rating_sum / rating_count
-
-        ranking.append({"name": rank_user["name"], "ranking": avg})
-
-    ranking.sort(key=lambda x: x["ranking"], reverse=True)
+    user = users.find_one({"username": username})
+    if user is None:
+        response = redirect(url_for("login"))
+        unset_jwt_cookies(response)
+        return response
 
     return render_template(
-        "dashboard.html", username=username, user=user, ranking=ranking
+        "dashboard.html",
+        username=username,
+        user=user,
+        ranking=ranking(),
+        is_admin=is_admin(username),
+        is_open=get_game_status(),
     )
 
 
@@ -175,44 +166,44 @@ def likes():
     username = get_jwt_identity()
     current_user = users.find_one({"username": username})
 
+    if current_user is None:
+        return jsonify({"result": "false", "message": "사용자를 찾을 수 없습니다."}), 404
+
     if current_user.get("target_id") is None:
-        return jsonify({
-            "result": "false",
-            "message": "아직 마니또가 배정되지 않았습니다."
-        })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     # 이미 별점을 줬는지 확인
     if current_user.get("rated", False):
-        return jsonify({
-            "result": "false",
-            "message": "이미 별점을 등록했습니다."
-        })
+        return jsonify({"result": "false", "message": "이미 별점을 등록했습니다."})
 
     try:
         like = int(request.form.get("like"))
     except (TypeError, ValueError):
-        return jsonify({"result": "false"})
+        return jsonify({"result": "false", "message": "별점 형식이 올바르지 않습니다."}), 400
 
     if 1 <= like <= 5:
-
-        # 내 마니띠에게 별점 추가
-        users.update_one(
+        # 나를 마니또로 배정받은 사용자(내 마니띠)에게 별점 추가
+        result = users.update_one(
             {"target_id": username},
-            {"$inc": {
-                "rating_sum": like,
-                "rating_count": 1
-            }}
+            {"$inc": {"rating_sum": like, "rating_count": 1}},
         )
+
+        if result.matched_count == 0:
+            return jsonify(
+                {"result": "false", "message": "별점을 받을 마니띠를 찾을 수 없습니다."}
+            ), 404
 
         # 나는 별점을 줬다고 표시
         users.update_one(
             {"username": username},
-            {"$set": {"rated": True}}
+            {"$set": {"rated": True}},
         )
 
         return jsonify({"result": "success"})
 
-    return jsonify({"result": "false"})
+    return jsonify({"result": "false", "message": "별점은 1점부터 5점까지 가능합니다."}), 400
 
 # # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
 # @app.route("/api/sort", methods=["GET"])
@@ -237,24 +228,38 @@ def likes():
 
 # 셔플하기 / success
 @app.route("/api/shuffle", methods=["POST"])
-# 관리자 인증방식 추가
+@jwt_required()
 def shuffle():
-    # 데이터베이스를 가져오기
-    userList = list(users.find())
-    random.shuffle(userList)
-    n = len(userList)
+    username = get_jwt_identity()
 
-    # 셔플하기 성공
+    if not is_admin(username):
+        return jsonify({"result": "false", "message": "관리자 권한이 필요합니다."}), 403
+
+    user_list = list(users.find())
+    random.shuffle(user_list)
+    n = len(user_list)
+
     if n > 2:
         for i in range(n):
             users.update_one(
-                {"username": userList[i]["username"]},
-                {"$set": {"target_id": userList[(i + 1) % n]["username"]}},
+                {"username": user_list[i]["username"]},
+                {
+                    "$set": {
+                        "target_id": user_list[(i + 1) % n]["username"],
+                        "rated": False,
+                    }
+                },
             )
+        game_status.update_one(
+            {"_id": "current_status"},
+            {"$set": {"is_open": False}},
+            upsert=True,
+        )
         return jsonify({"result": "success"})
 
-    # 셔플하기 실패
-    return jsonify({"result": "false"})
+    return jsonify(
+        {"result": "false", "message": "마니또 배정에는 최소 3명이 필요합니다."}
+    ), 400
 
 # 마니또 공개 토글
 @app.route("/api/toggle-open", methods=["POST"])
@@ -265,15 +270,14 @@ def toggle_open():
     if not is_admin(username):
         return jsonify({"result": "false", "message": "관리자 권한이 필요합니다."}), 403
 
-    new_status = not get_game_status()          # 현재값 뒤집기
+    new_status = not get_game_status()
     game_status.update_one(
         {"_id": "current_status"},
         {"$set": {"is_open": new_status}},
-        upsert=True
+        upsert=True,
     )
 
     return jsonify({"result": "success", "is_open": new_status})
-    
 
 
 ##############################
@@ -287,20 +291,25 @@ def toggle_open():
 def showManitto():
     username = get_jwt_identity()
     if not get_game_status():
-        return jsonify({'result':False,"message": "아직 공개되지 않았습니다."})
+        return jsonify({"result": "false", "message": "아직 공개되지 않았습니다."})
 
     current_user = users.find_one({"username": username})
 
+    if current_user is None:
+        return jsonify({"result": "false", "message": "사용자를 찾을 수 없습니다."}), 404
+
     if current_user.get("target_id") is None:
-        return jsonify({
-            "result": "false",
-            "message": "아직 마니또가 배정되지 않았습니다."
-        })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     manitto = users.find_one(
         {"username": current_user["target_id"]},
         {"_id": 0, "name": 1, "mbti": 1, "want": 1},
     )
+
+    if manitto is None:
+        return jsonify({"result": "false", "message": "마니또 정보를 찾을 수 없습니다."}), 404
 
     return jsonify({"result": "success", "user": manitto})
 
@@ -310,20 +319,25 @@ def showManitto():
 def showManitti():
     username = get_jwt_identity()
     if not get_game_status():
-        return jsonify({'result':False,"message": "아직 공개되지 않았습니다."})
-    
+        return jsonify({"result": "false", "message": "아직 공개되지 않았습니다."})
+
     current_user = users.find_one({"username": username})
 
+    if current_user is None:
+        return jsonify({"result": "false", "message": "사용자를 찾을 수 없습니다."}), 404
+
     if current_user.get("target_id") is None:
-        return jsonify({
-            "result": "false",
-            "message": "아직 마니또가 배정되지 않았습니다."
-        })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     manitti = users.find_one(
         {"target_id": username},
         {"_id": 0, "name": 1, "mbti": 1, "want": 1},
     )
+
+    if manitti is None:
+        return jsonify({"result": "false", "message": "마니띠 정보를 찾을 수 없습니다."}), 404
 
     return jsonify({"result": "success", "user": manitti})
 
@@ -367,6 +381,9 @@ def update_user():
     if "want" in request.form:
         update_data["want"] = request.form["want"]
 
+    if not update_data:
+        return jsonify({"result": "false", "message": "수정할 정보가 없습니다."}), 400
+
     # update_data에 포함된 필드만 수정
     users.update_one({"username": username}, {"$set": update_data})
     return jsonify({"result": "success"})
@@ -377,17 +394,14 @@ def update_user():
 ####################
 
 def get_target(username):
-    user = users.find_one(
-        {"username": username},
-        {"_id":0, "target_id":1}
-    )
+    user = users.find_one({"username": username}, {"_id": 0, "target_id": 1})
     if user is None:
         return None
     return user.get("target_id")
 
 # 유저타입 / success
 def is_admin(username):
-    user = users.find_one({'username':username},{'_id':0,"role":1})
+    user = users.find_one({"username": username}, {"_id": 0, "role": 1})
     return bool(user and user.get("role") == "admin")
 
 # 랭킹함수 / success
@@ -407,10 +421,10 @@ def ranking():
         else:
             avg = rating_sum / rating_count
     
-        ranking.append({"name": rank_user["name"], "ranking": avg})
+        ranking.append({"name": rank_user.get("name", "이름 없음"), "ranking": avg})
     
     ranking.sort(key=lambda x: x["ranking"], reverse=True)
-     
+
     return ranking
 
 # 게임 상태 초기 설정 / success
