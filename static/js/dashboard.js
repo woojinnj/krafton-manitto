@@ -76,7 +76,6 @@ function loadCard(url, title, showRating) {
 /* =============================
    별점 등록
 ============================= */
-
 function submitRating() {
   const selectedRating = document.querySelector('input[name="rating"]:checked');
 
@@ -176,31 +175,6 @@ document.addEventListener("DOMContentLoaded", function () {
     star.addEventListener("click", function () {
       const rating = Number(this.dataset.rating);
 
-      ratingEmoji.innerText = getEmoji(rating);
-    });
-  });
-
-  /*
-           별 영역에서 마우스를 빼면
-           선택된 별의 이모티콘 유지
-        */
-  const starRating = document.querySelector(".star-rating");
-
-  starRating.addEventListener("mouseleave", function () {
-    const checked = document.querySelector('input[name="rating"]:checked');
-
-    if (checked) {
-      ratingEmoji.innerText = getEmoji(Number(checked.value));
-    } else {
-      ratingEmoji.innerText = "🙂";
-    }
-  });
-});
-
-/* =============================
-   관리자: 마니또 셔플 실행
-   - 버튼 onclick="handleShuffle()" 과 이름이 맞아야 작동
-============================= */
 function handleShuffle() {
   fetch("/api/shuffle", {
     method: "POST", // 셔플은 데이터를 바꾸므로 POST
@@ -223,7 +197,6 @@ function handleShuffle() {
 
 /* =============================
    관리자: 마니또 공개 여부 전환
-============================= */
 function handleToggleOpen() {
   fetch("/api/toggle-open", {
     method: "POST",
@@ -244,3 +217,34 @@ function handleToggleOpen() {
       alert("상태 전환 중 오류가 발생했습니다.");
     });
 }
+    });
+
+
+    // 별 영역에서 마우스가 빠져나갔을 때
+    starRating.addEventListener("mouseleave", function () {
+
+        const selectedRating =
+            document.querySelector(
+                'input[name="rating"]:checked'
+            );
+
+
+        // 선택한 별점이 있으면 선택한 점수의 표정 유지
+        if (selectedRating) {
+
+            const rating =
+                Number(selectedRating.value);
+
+            ratingEmoji.innerText =
+                getEmoji(rating);
+
+        } else {
+
+            // 아직 선택하지 않았다면 기본 표정
+            ratingEmoji.innerText = "🙂";
+
+        }
+
+    });
+
+});
