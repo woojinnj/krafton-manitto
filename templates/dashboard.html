@@ -314,12 +314,11 @@
 
                 <tbody>
 
-                    {% for user in ranking %}
+                    {% for rank_user in ranking %}
 
                     <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.ranking }}</td>
+                        <td>{{ rank_user.name }}</td>
+                        <td>{{ "%.1f"|format(rank_user.ranking) }}</td>
                     </tr>
 
                     {% endfor %}
