@@ -27,12 +27,84 @@
       align-items: center;
     }
 
-    .main-image {
-      width: 500px;
-      height: 500px;
-      background-color: #c8ff8c;
-      margin-bottom: 30px;
-    }
+    .flip {
+    width: 500px;
+    height: 500px;
+    perspective: 1100px;
+    margin-bottom: 30px;
+}
+
+.manitto-card {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    backface-visibility: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-front {
+    background-color: red;
+}
+
+.card-back {
+    background-color: royalblue;
+    color: white;
+
+    transform: rotateY(180deg);
+}
+
+/* 카드가 뒤집힌 상태 */
+.manitto-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  justify-content: space-around;
+  padding: 0 0.2em;
+  text-align: center;
+  width: 5em;
+}
+ 
+.star-rating input {
+  display: none;
+}
+ 
+.star-rating label {
+  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 2.3px;
+  -webkit-text-stroke-color: #2b2a29;
+  cursor: pointer;
+}
+ 
+.star-rating :checked ~ label {
+  -webkit-text-fill-color: gold;
+}
+ 
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  -webkit-text-fill-color: #fff58c;
+}
 
     .button-area {
       display: flex;
@@ -45,6 +117,7 @@
       background-color: white;
       border: 1px solid #555;
       cursor: pointer;
+      font-size: 20px;
     }
 
     .sidebar {
@@ -60,33 +133,33 @@
 
     .profile-top {
       display: flex;
+      justify-content: space-evenly;
       align-items: center;
       gap: 25px;
       margin-bottom: 25px;
     }
 
-    .profile-image {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background-color: #ddd;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
+    .username-box,
     .name-box {
-      width: 130px;
-      padding: 15px;
-      background-color: white;
-      text-align: center;
+        flex: 1;
+        height: 40px;
+        width: 130px;
+        padding: 15px;
+        background-color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
     }
 
     .profile-info {
       background-color: white;
       margin-bottom: 15px;
       padding: 10px;
+      font-size: 20px;
+      height: 80px;
+      text-align: center;
     }
 
     .profile-info p {
@@ -101,6 +174,7 @@
       background-color: white;
       border: none;
       cursor: pointer;
+      font-size: 20px;
     }
 
     .ranking-area {
@@ -127,80 +201,181 @@
 
   </head>
 
-  <body>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dashboard</title>
+
+    <style>
+        /* CSS */
+    </style>
+</head>
+
+<body>
+
     <main class="main-area">
-      <div class="main-image">
-        이미지
-      </div>
-      <div class="button-area">
-        <button>마니또</button>
-        <button>마니띠</button>
-      </div>
+
+        <div class="flip">
+            <div class="manitto-card" id="manitto-card">
+
+                <div class="card-front">
+                    <h2>마니또</h2>
+                    <p>버튼을 눌러 확인하세요!</p>
+                </div>
+
+                <div class="card-back">
+
+                    <h2 id="card-title">내 마니또</h2>
+
+                    <p>이름 : <span id="card-name"></span></p>
+                    <p>MBTI : <span id="card-mbti"></span></p>
+                    <p>WANT : <span id="card-want"></span></p>
+
+                    <div id="app">
+                    <div id="manitti-extra" style="display: none;">
+                        <div class="star-rating space-x-4 mx-auto">
+                            <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings"/>
+                            <label for="5-stars" class="star pr-4">★</label>
+                            <input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
+                            <label for="4-stars" class="star">★</label>
+                            <input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
+                            <label for="3-stars" class="star">★</label>
+                            <input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
+                            <label for="2-stars" class="star">★</label>
+                            <input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
+                            <label for="1-star" class="star">★</label>
+                        </div>
+                    </div>                        
+                            <button type="button" class="rating-button" @click="submitRating">별점 등록</button>
+                    </div>
+
+            </div>
+        </div>
+
+
+        <div class="button-area">
+
+            <button onclick="showManitto()">
+                마니또
+            </button>
+
+            <button onclick="showManitti()">
+                마니띠
+            </button>
+
+        </div>
+
     </main>
 
+
     <aside class="sidebar">
-      <section class="profile-area">
-        <div class="profile-top">
-          <div class="profile-image">
-            사진
-          </div>
-          <div class="name-box">
-            이름
-          </div>
-        </div>
-        <div class="profile-info">
-          <p>MBTI</p>
-          <p>WANT</p>
-        </div>
-        <button class="logout-button">로그아웃</button>
-      </section>
 
-      <section class="ranking-area">
-        <table class="ranking-table">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>이름</th>
-              <th>별점</th>
-            </tr>
-          </thead>
+        <section class="profile-area">
 
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>홍길동</td>
-              <td>5.0</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>김철수</td>
-              <td>4.8</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>이영희</td>
-              <td>4.5</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+            <div class="profile-top">
+
+                <div class="username-box">
+                    {{ user.username }}
+                </div>
+
+                <div class="name-box">
+                    {{user.name}}
+                </div>
+
+            </div>
+
+            <div class="profile-info">
+                <p>MBTI : {{ user.mbti }}</p>
+                <p>WANT : {{ user.want }}</p>
+            </div>
+
+            <button class="logout-button">
+                            <a href="{{ url_for('index') }}" class="index-link">로그아웃</a>
+
+            </button>
+
+        </section>
+
+
+        <section class="ranking-area">
+
+            <table class="ranking-table">
+
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>이름</th>
+                        <th>별점</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for user in ranking %}
+
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.ranking }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
     </aside>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  <script>
-    // HTML이 다 준비된 뒤 실행
-    $(document).ready(function () {});
 
-    // 수정중임
-    function doShuffle() {
-      $.ajax({
-        type: "POST",
-        url: "/api/shuffle", // 셔플 요청 api 함수는 app에서 만들예정
-        success: function (response) {
-          alert("셔플되었습니다!");
-          location.reload(); //페이지 새로고침
-        },
-      });
-    }
-  </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function showManitto() {
+            const card = document.getElementById("manitto-card");
+
+            document.getElementById("card-title").innerText = "내 마니또";
+            document.getElementById("card-name").innerText = "이지민";
+            document.getElementById("card-mbti").innerText = "ENFP";
+            document.getElementById("card-want").innerText = "초콜릿 주세요";
+
+            document.getElementById("manitti-extra").style.display = "none";
+
+            card.classList.add("flipped");
+        }
+
+        function showManitti() {
+            const card = document.getElementById("manitto-card");
+
+            document.getElementById("card-title").innerText = "내 마니띠";
+            document.getElementById("card-name").innerText = "현나";
+            document.getElementById("card-mbti").innerText = "ISTJ";
+            document.getElementById("card-want").innerText = "커피 주세요";
+
+            document.getElementById("manitti-extra").style.display = "block";
+
+            card.classList.add("flipped");
+        }
+    </script>
+
+<script>
+    const app = Vue.createApp({
+
+        data() {
+            return {
+                ratings: 0
+            }
+        }
+    });
+
+        app.mount('#app');
+</script>
+
+</body>
+
 </html>

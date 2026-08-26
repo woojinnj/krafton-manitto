@@ -126,7 +126,23 @@ def signup():
 @jwt_required()
 def dashboard():
     username = get_jwt_identity()
-    return render_template("dashboard.html", username=username)
+
+    user = db.users.find_one(
+        {"username": username
+         })
+
+    ranking = [
+        {"name": "이지민", "ranking": 157},
+        {"name": "현나", "ranking": 155},
+        {"name": "국환", "ranking": 152}
+        ]
+
+    return render_template(
+        "dashboard.html",
+        username=username,
+        user=user,
+        ranking=ranking
+        )
 
 
 ##############################
@@ -330,3 +346,12 @@ def has_target(username):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route('/api/my-manitto')
+def my_manitto():
+
+    return jsonify({
+        "name": "민수",
+        "mbti": "ISTJ",
+        "want": "커피 주세요"
+    })
