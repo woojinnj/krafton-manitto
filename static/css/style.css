@@ -138,6 +138,7 @@ a {
 
 .button-logo {
     margin-bottom: 50px;
+    text-align: center;
 }
 
 .index-link {
@@ -519,7 +520,7 @@ a {
 }
 
 .profile-area {
-    min-height: 360px;
+    min-height: 420px;
 
     padding: 30px;
 
@@ -615,6 +616,21 @@ a {
     background-color: white;
 
     color: #F2AA00;
+}
+
+.ranking-title {
+  padding: 20px;
+
+  text-align: center;
+
+  font-size: 24px;
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  color: #f5a000;
+
+  border-bottom: 1px solid #ddd;
 }
 
 .ranking-table {
