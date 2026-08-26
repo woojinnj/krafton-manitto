@@ -1,49 +1,47 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>index_frontend</title>
 
-    <!-- 폰트 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- 부트스트랩 -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- 스타일시트 -->
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <style></style>
-  </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <body>
+    <title>마니또</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="index-page">
+
     <div class="landing-container">
-      <div>
-        <h1 class="title">Jungle</h1>
-        <h1 class="subtitle">ㅁㄴㄸ</h1>
-      </div>
 
-      <div class="button-area">
-        <a
-          href="/login"
-          class="btn btn-outline-light btn-lg py-3 fw-bold rounded-3"
-        >
-          로그인
-        </a>
+        <div>
+            <h1 class="title">Jungle</h1>
+            <h2 class="subtitle">ㅁㄴㄸ</h2>
+        </div>
 
-        <a
-          href="/signup"
-          class="btn btn-outline-light btn-lg py-3 fw-bold rounded-3"
-        >
-          회원가입
-        </a>
-      </div>
+        <div class="button-area">
+
+            <a
+                href="{{ url_for('login') }}"
+                class="index-button"
+            >
+                로그인
+            </a>
+
+            <a
+                href="{{ url_for('signup') }}"
+                class="index-button"
+            >
+                회원가입
+            </a>
+
+        </div>
+
     </div>
-  </body>
+
+</body>
+
 </html>
