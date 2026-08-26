@@ -18,6 +18,7 @@ app.config["JWT_SECRET_KEY"] = (
 )
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_COOKIE_HTTPONLY"] = True
+app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
 jwt = JWTManager(app)
 
@@ -241,28 +242,40 @@ def shuffle():
 def showManitto():
     username = get_jwt_identity()
 
-    if get_target(username) is None:
-        return jsonify({"result": "false"})
-    
-    # 마니또 정보
-    manitto = users.find_one({"target_id": username}, {"_id": 0, "name": 1,"mbti":1, "want":1})
+    current_user = users.find_one({"username": username})
+
+    if current_user.get("target_id") is None:
+        return jsonify({
+            "result": "false",
+            "message": "아직 마니또가 배정되지 않았습니다."
+        })
+
+    manitto = users.find_one(
+        {"username": current_user["target_id"]},
+        {"_id": 0, "name": 1, "mbti": 1, "want": 1},
+    )
 
     return jsonify({"result": "success", "user": manitto})
 
-
-# 마니띠 조회하기 / 테스트중 / 기능 넘어가야 함
+# 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
 @app.route("/dashboard/showManitti", methods=["GET"])
 @jwt_required()
 def showManitti():
     username = get_jwt_identity()
-    
-    target = get_target(username)
-    if target is None:
-        return jsonify({"result": "false",})
-    # 마니띠
+
+    current_user = users.find_one({"username": username})
+
+    if current_user.get("target_id") is None:
+        return jsonify({
+            "result": "false",
+            "message": "아직 마니또가 배정되지 않았습니다."
+        })
+
     manitti = users.find_one(
-        {"username": target}, {"_id": 0, "name": 1}
+        {"target_id": username},
+        {"_id": 0, "name": 1, "mbti": 1, "want": 1},
     )
+
     return jsonify({"result": "success", "user": manitti})
 
 
