@@ -134,12 +134,12 @@ def dashboard():
 ##############################
 
 
-# 좋아요 주기 / 완성기능 / JWT로 수정
+# 좋아요 주기 / 수정중 / JWT로 수정
 @app.route("/api/likes", methods=["POST"])
 @jwt_required()
 def likes():
     username = get_jwt_identity()
-    current_user = users.find_one({'username':username})
+    current_target_id = users.find_one({'username':username})
 
     if current_user.get("target_id") is None:
         return jsonify({
@@ -163,7 +163,7 @@ def likes():
     return jsonify({"result": "false"})
 
 
-# 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
+# 정렬하기 / 작업완료
 @app.route("/api/sort", methods=["GET"])
 def sort():
     userList = list(
@@ -184,7 +184,7 @@ def sort():
     return jsonify({"result": "success", "ranker": ranker[:5]})
 
 
-# 셔플하기 /success
+# 셔플하기 / success
 @app.route("/api/shuffle", methods=["POST"])
 # 관리자 인증방식 추가
 def shuffle():
@@ -211,42 +211,33 @@ def shuffle():
 ##############################
 
 
-# 마니또 조회하기 / 수정사항 / 기능 넘어가야 함
+# 마니또 조회하기 / 테스트중 / 기능 넘어가야 함
 @app.route("/dashboard/showManitto", methods=["GET"])
 @jwt_required()
 def showManitto():
     username = get_jwt_identity()
-    current_user = users.find_one({'username':username})
+
+    if get_target(username) is None:
+        return jsonify({"result": "false"})
     
-    if current_user.get("target_id") is None:
-        return jsonify({
-        "result": "false",
-        "message": "아직 마니또가 배정되지 않았습니다."
-    })
     # 마니또 정보
-    manitto = users.find_one({"target_id": username}, {"_id": 0, "name": 1})
+    manitto = users.find_one({"target_id": username}, {"_id": 0, "name": 1,"mbti":1, "want":1})
 
     return jsonify({"result": "success", "user": manitto})
 
 
-# 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
+# 마니띠 조회하기 / 테스트중 / 기능 넘어가야 함
 @app.route("/dashboard/showManitti", methods=["GET"])
 @jwt_required()
 def showManitti():
     username = get_jwt_identity()
     
-    # 나의 정보
-    current_user = users.find_one({"username": username})
-    
-    if current_user.get("target_id") is None:
-        return jsonify({
-        "result": "false",
-        "message": "아직 마니또가 배정되지 않았습니다."
-    })
-    
+    target = get_target(username)
+    if target is None:
+        return jsonify({"result": "false",})
     # 마니띠
     manitti = users.find_one(
-        {"username": (current_user["target_id"])}, {"_id": 0, "name": 1}
+        {"username": target}, {"_id": 0, "name": 1}
     )
     return jsonify({"result": "success", "user": manitti})
 
@@ -256,7 +247,7 @@ def showManitti():
 ##############################
 
 
-# 마이페이지 보기 / 수정사항 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
+# 마이페이지 보기 / 테스트중 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
 @app.route("/dashboard/side/myPage", methods=["GET"])
 @jwt_required()
 def myPage():
@@ -275,7 +266,7 @@ def myPage():
     return jsonify({"result": "success", "user": user, "avg": avg})
 
 
-# 정보 업데이트 /
+# 정보 업데이트 / success
 @app.route("/dashboard/side/update", methods=["PUT"])
 @jwt_required()
 def update_user():
@@ -299,12 +290,14 @@ def update_user():
 # 유틸 함수
 ####################
 
-def has_target(username):
+def get_target(username):
     user = users.find_one(
         {"username": username},
-        {"target_id":1}
+        {"_id":0, "target_id":1}
     )
-    return user and user.get("target_id") is not None
+    if user is None:
+        return None
+    return user.get("target_id")
 
 
 # 더미데이터 테스트
