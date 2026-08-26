@@ -388,9 +388,7 @@ def get_target(username):
 # 유저타입 / success
 def is_admin(username):
     user = users.find_one({'username':username},{'_id':0,"role":1})
-    if user and user.get("role") == "admin":
-        return True
-    return False
+    return bool(user and user.get("role") == "admin")
 
 # 랭킹함수 / success
 def ranking():
