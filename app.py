@@ -107,40 +107,45 @@ def dashboard():
 
 
 ##############################
-# 추가기능
+# 기능
 ##############################
 
-# 좋아요 주기 /success
+# 좋아요 주기 / 완성기능 / JWT로 수정
 @app.route('/api/likes', methods=['POST'])
+@jwt_required()
 def likes():
+    username=get_jwt_identity()
     like = int(request.form.get('like'))
-    user_id = request.form.get('id')
     # 5보다 작게 받기 추가해야함
-    me = db.users.update_one(
-        {"_id": ObjectId(user_id)},
-        {"$inc":{
-            "rating_sum": like, 
-            "rating_count": 1
-            }}
-    ) #나의 정보
+    if 1 <= like <= 5:
+        me = db.users.update_one(
+            {"targetId": username},
+            {"$inc":{
+                "rating_sum": like, 
+                "rating_count": 1
+                }}
+        )
+        return jsonify({"result":"success"})
+    #실패
+    return jsonify({"result":"false"})
 
-    return jsonify({"result":"success"})
-
-# 정렬하기
-@app.route('/api/sort', methods=['POST'])
+# 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
+@app.route('/api/sort', methods=['GET'])
 def sort():
-    userList = list(users.find({}, {'_id' : 0 , 'name':1, 'rating_sum': 1, 'rating_count':1}))
+    userList = list(users.find({}, {'_id':0 , 'name':1, 'rating_sum':1, 'rating_count':1}))
     
     ranker = []
     for user in userList:
         name = user.get('name')
-        if user.get('rating_count', 0) != 0:
-            avg = user.get('rating_sum', 0) / user.get('rating_count', 0)
+        sum = user.get('rating_sum',0)
+        count = user.get('rating_count',0)
+        if count != 0:
+            avg = sum/ count
             ranker.append({'name': name, 'avg': avg})
+     #파이썬 정렬 함수
+    ranker.sort(key=lambda x: x['avg'], reverse=True)
 
-    ranker.sort(key=lambda x: x['avg'], reverse=True) #파이썬 정렬 함수
-
-    return ranker[:5]
+    return jsonify({"reuslt":"success","ranker":ranker[:5]})
 
     
 
@@ -157,8 +162,8 @@ def shuffle():
     if n > 2:
         for i in range(n):
             db.users.update_one(
-                {"_id": userList[i]["_id"]},
-                {"$set": {"targetId": userList[(i + 1) % n]["_id"]}},
+                {"username": userList[i]["username"]},
+                {"$set": {"targetId": userList[(i + 1) % n]["username"]}},
             )
         return jsonify({"result": "success"})
 
@@ -169,27 +174,28 @@ def shuffle():
 #대시보드 메인화면 기능
 ##############################
 
-# 마니또 조회하기
+# 마니또 조회하기 / 수정사항 / 기능 넘어가야 함
 @app.route('/dashboard/showManitto', methods=['GET'])
+@jwt_required()
 def showManitto():
-    user_id = request.args.get('id')
+    username=get_jwt_identity()
 
-    manitto_doc = users.find_one({'targetId': ObjectId(user_id)}) #마니띠 정보
-
-    manitto = getUserId(manitto_doc['_id']) #마니띠
+    #마니EH 정보
+    manitto = users.find_one({'targetId': username})
 
     return jsonify({'result': 'success', 'user': manitto})
 
 
 
-# 마니띠 조회하기
+# 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
 @app.route('/dashboard/showManitti', methods=['GET'])
+@jwt_required()
 def showManitti():
-    user_id = request.args.get('id')
-
-    me = users.find_one({'_id': ObjectId(user_id)}) #나의 정보
-
-    manitti = getUserId(me['targetId']) #마니띠
+    username=get_jwt_identity()
+    #나의 정보
+    currentUser = users.find_one({'username': username})
+    #마니띠
+    manitti = users.find_one({'username':(currentUser['targetId'])})
 
     return jsonify({'result': 'success', 'user': manitti})
 
@@ -199,20 +205,21 @@ def showManitti():
 #사이드바 기능
 ##############################
 
-# 마이페이지 보기
-@app.route('/dashboard/side/myPage', methods=['POST'])
+# 마이페이지 보기 / 수정사항 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
+@app.route('/dashboard/side/myPage', methods=['GET'])
 def myPage():
     user_id = request.form.get('id')
     user = users.find_one(
             {'_id':ObjectId(user_id)},
-            {'_id':0, 'name':1, 'mbti':1, 'rating_sum':1, 'want':1} # id를 제외하고 리턴
+            {'_id':0, 'name':1, 'mbti':1, 'rating_sum':1, 'want':1}
         )
     return jsonify({'result': 'success', 'user': user})
 
-# 정보 업데이트
-@app.route('/dashboard/side/update', methods=['POST'])
+# 정보 업데이트 /
+@app.route('/dashboard/side/update', methods=['PUT'])
+@jwt_required()
 def update_user():
-    user_id = request.form.get('id')
+    username=get_jwt_identity()
     
     # 들어온 값만 dictionary
     update_data = {}
@@ -221,31 +228,13 @@ def update_user():
     if 'want' in request.form: update_data['want'] = request.form['want']
 
     # update_data에 포함된 필드만 수정
-    users.update_one({'_id': ObjectId(user_id)}, {'$set': update_data})
+    users.update_one({'username': username}, {'$set': update_data})
     return jsonify({'result': 'success'})
 
 ####################
 # 유틸 함수
 ####################
 
-#id를 받아 유저 호출
-def getUserId(user_id):
-    return db.users.find_one(
-        {'_id': ObjectId(user_id)},
-        {'_id': 0, 'name': 1, 'mbti': 1, 'rating_sum': 1, 'want': 1}
-    )
-
-# 점수 평균 함수
-def averageRating(user_id):
-    user = users.find_one({"_id":ObjectId(user_id)})
-
-    if not user:
-        return 0.0
-
-    sum = user.get("rating_sum", 0) # 기본 0
-    count = user.get("rating_count",0)
-
-    return round(sum/count, 2)
 
 
 
