@@ -1,3 +1,33 @@
+function shuffleManitto() {
+
+    fetch("/api/shuffle", {
+        method: "POST"
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.result === "success") {
+
+            alert("마니또 배정이 완료되었습니다!");
+
+        } else {
+
+            alert("마니또 배정에 실패했습니다.");
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("마니또 배정 중 오류가 발생했습니다.");
+
+    });
+}
+
 function showManitto() {
     loadCard(
         "/dashboard/showManitto",
