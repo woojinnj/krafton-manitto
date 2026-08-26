@@ -127,11 +127,13 @@ def signup():
         return redirect(url_for("login"))
     return render_template("signup.html")
 
+
 @app.route("/logout")
 def logout():
     response = redirect(url_for("index"))
     unset_jwt_cookies(response)
     return response
+
 
 @app.route("/dashboard")
 @jwt_required()
@@ -167,7 +169,9 @@ def likes():
     current_user = users.find_one({"username": username})
 
     if current_user is None:
-        return jsonify({"result": "false", "message": "사용자를 찾을 수 없습니다."}), 404
+        return jsonify(
+            {"result": "false", "message": "사용자를 찾을 수 없습니다."}
+        ), 404
 
     if current_user.get("target_id") is None:
         return jsonify(
@@ -181,7 +185,9 @@ def likes():
     try:
         like = int(request.form.get("like"))
     except (TypeError, ValueError):
-        return jsonify({"result": "false", "message": "별점 형식이 올바르지 않습니다."}), 400
+        return jsonify(
+            {"result": "false", "message": "별점 형식이 올바르지 않습니다."}
+        ), 400
 
     if 1 <= like <= 5:
         # 나를 마니또로 배정받은 사용자(내 마니띠)에게 별점 추가
@@ -203,7 +209,10 @@ def likes():
 
         return jsonify({"result": "success"})
 
-    return jsonify({"result": "false", "message": "별점은 1점부터 5점까지 가능합니다."}), 400
+    return jsonify(
+        {"result": "false", "message": "별점은 1점부터 5점까지 가능합니다."}
+    ), 400
+
 
 # # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
 # @app.route("/api/sort", methods=["GET"])
@@ -235,7 +244,7 @@ def shuffle():
     if not is_admin(username):
         return jsonify({"result": "false", "message": "관리자 권한이 필요합니다."}), 403
 
-    user_list = list(users.find())
+    user_list = list(users.find({"role": {"$ne": "admin"}}))
     random.shuffle(user_list)
     n = len(user_list)
 
@@ -260,6 +269,7 @@ def shuffle():
     return jsonify(
         {"result": "false", "message": "마니또 배정에는 최소 3명이 필요합니다."}
     ), 400
+
 
 # 마니또 공개 토글
 @app.route("/api/toggle-open", methods=["POST"])
@@ -296,7 +306,9 @@ def showManitto():
     current_user = users.find_one({"username": username})
 
     if current_user is None:
-        return jsonify({"result": "false", "message": "사용자를 찾을 수 없습니다."}), 404
+        return jsonify(
+            {"result": "false", "message": "사용자를 찾을 수 없습니다."}
+        ), 404
 
     if current_user.get("target_id") is None:
         return jsonify(
@@ -309,9 +321,12 @@ def showManitto():
     )
 
     if manitto is None:
-        return jsonify({"result": "false", "message": "마니또 정보를 찾을 수 없습니다."}), 404
+        return jsonify(
+            {"result": "false", "message": "마니또 정보를 찾을 수 없습니다."}
+        ), 404
 
     return jsonify({"result": "success", "user": manitto})
+
 
 # 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
 @app.route("/dashboard/showManitti", methods=["GET"])
@@ -324,7 +339,9 @@ def showManitti():
     current_user = users.find_one({"username": username})
 
     if current_user is None:
-        return jsonify({"result": "false", "message": "사용자를 찾을 수 없습니다."}), 404
+        return jsonify(
+            {"result": "false", "message": "사용자를 찾을 수 없습니다."}
+        ), 404
 
     if current_user.get("target_id") is None:
         return jsonify(
@@ -337,7 +354,9 @@ def showManitti():
     )
 
     if manitti is None:
-        return jsonify({"result": "false", "message": "마니띠 정보를 찾을 수 없습니다."}), 404
+        return jsonify(
+            {"result": "false", "message": "마니띠 정보를 찾을 수 없습니다."}
+        ), 404
 
     return jsonify({"result": "success", "user": manitti})
 
@@ -393,39 +412,46 @@ def update_user():
 # 유틸 함수
 ####################
 
+
 def get_target(username):
     user = users.find_one({"username": username}, {"_id": 0, "target_id": 1})
     if user is None:
         return None
     return user.get("target_id")
 
+
 # 유저타입 / success
 def is_admin(username):
     user = users.find_one({"username": username}, {"_id": 0, "role": 1})
     return bool(user and user.get("role") == "admin")
 
+
 # 랭킹함수 / success
 def ranking():
     user_list = list(
-        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+        users.find(
+            {"role": {"$ne": "admin"}},
+            {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1},
+        )
     )
-    
+
     ranking = []
-    
+
     for rank_user in user_list:
         rating_sum = rank_user.get("rating_sum", 0)
         rating_count = rank_user.get("rating_count", 0)
-    
+
         if rating_count == 0:
             avg = 0
         else:
             avg = rating_sum / rating_count
-    
+
         ranking.append({"name": rank_user.get("name", "이름 없음"), "ranking": avg})
-    
+
     ranking.sort(key=lambda x: x["ranking"], reverse=True)
 
     return ranking
+
 
 # 게임 상태 초기 설정 / success
 def init_game_status():
@@ -434,6 +460,7 @@ def init_game_status():
         game_status.insert_one({"_id": "current_status", "is_open": False})
         return None
     return status
+
 
 # 게임 상태 조회
 def get_game_status():
