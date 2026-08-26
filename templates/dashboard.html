@@ -129,6 +129,7 @@
     .profile-area {
       background-color: #c8ff8c;
       padding: 30px;
+      height: 500px;
     }
 
     .profile-top {
@@ -197,6 +198,45 @@
       background-color: #f5f5f5;
     }
 
+.rating-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star {
+    font-size: 45px;
+    color: #333;
+    cursor: pointer;
+}
+
+#rating-emoji {
+    font-size: 35px;
+    display: inline-block;
+}
+
+/* 마우스를 올렸을 때 */
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: gold;
+}
+
+/* 클릭했을 때 */
+.star-rating input:checked ~ label {
+    color: gold;
+}
+
   </style>
 
   </head>
@@ -234,22 +274,24 @@
                     <p>MBTI : <span id="card-mbti"></span></p>
                     <p>WANT : <span id="card-want"></span></p>
 
-                    <div id="app">
                     <div id="manitti-extra" style="display: none;">
-                        <div class="star-rating space-x-4 mx-auto">
-                            <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings"/>
-                            <label for="5-stars" class="star pr-4">★</label>
-                            <input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
-                            <label for="4-stars" class="star">★</label>
-                            <input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
-                            <label for="3-stars" class="star">★</label>
-                            <input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
-                            <label for="2-stars" class="star">★</label>
-                            <input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
-                            <label for="1-star" class="star">★</label>
+                        <div class="rating-wrap">
+                        <div class="star-rating">
+                            <input type="radio" id="5-stars" name="rating" value="5">
+                            <label for="5-stars" class="star" data-rating="5">★</label>
+                            <input type="radio" id="4-stars" name="rating" value="4"/>
+                            <label for="4-stars" class="star" data-rating="4">★</label>
+                            <input type="radio" id="3-stars" name="rating" value="3"/>
+                            <label for="3-stars" class="star" data-rating="3">★</label>
+                            <input type="radio" id="2-stars" name="rating" value="2"/>
+                            <label for="2-stars" class="star" data-rating="2">★</label>
+                            <input type="radio" id="1-star" name="rating" value="1"/>
+                            <label for="1-star" class="star" data-rating="1">★</label>
                         </div>
+
+                        <span id="rating-emoji">🙂</span>
                     </div>                        
-                            <button type="button" class="rating-button" @click="submitRating">별점 등록</button>
+                    <button type="button" onclick="submitRating()">별점 등록</button>
                     </div>
 
             </div>
@@ -361,19 +403,74 @@
 
             card.classList.add("flipped");
         }
-    </script>
 
-<script>
-    const app = Vue.createApp({
+function submitRating() {
 
-        data() {
-            return {
-                ratings: 0
+        const selectedRating =
+            document.querySelector('input[name="rating"]:checked');
+
+        if (!selectedRating) {
+            alert("별점을 선택해주세요.");
+            return;
+        }
+
+        const rating = Number(selectedRating.value);
+
+        fetch("/api/rating", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                rating: rating
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("별점이 등록되었습니다!");
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const stars = document.querySelectorAll(".star");
+        const ratingEmoji = document.getElementById("rating-emoji");
+
+        function getEmoji(rating) {
+
+            switch (rating) {
+                case 1: return "😭";
+                case 2: return "😢";
+                case 3: return "🙂";
+                case 4: return "😄";
+                case 5: return "😍";
+                default: return "🙂";
             }
         }
+
+        stars.forEach(function (star) {
+
+            star.addEventListener("mouseenter", function () {
+
+                const rating = Number(this.dataset.rating);
+
+                ratingEmoji.innerText = getEmoji(rating);
+            });
+
+            star.addEventListener("click", function () {
+
+                const rating = Number(this.dataset.rating);
+
+                ratingEmoji.innerText = getEmoji(rating);
+            });
+
+        });
+
     });
 
-        app.mount('#app');
 </script>
 
 </body>
