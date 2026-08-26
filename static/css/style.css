@@ -154,7 +154,8 @@ a {
 /* 로고 */
 
 .button-logo {
-  margin-bottom: 50px;
+    margin-bottom: 50px;
+    text-align: center;
 }
 
 .index-link {
@@ -689,6 +690,21 @@ a {
   background-color: white;
 
   color: var(--brand);
+}
+
+.ranking-title {
+  padding: 20px;
+
+  text-align: center;
+
+  font-size: 24px;
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  color: #f5a000;
+
+  border-bottom: 1px solid #ddd;
 }
 
 .ranking-table {

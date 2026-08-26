@@ -108,7 +108,7 @@
           class="admin-action-button"
           onclick="handleToggleOpen()"
         >
-          마니또 공개 여부 전환
+          마니띠 공개 여부 전환
         </button>
       </section>
       {% endif %}
@@ -121,7 +121,18 @@
     <aside class="sidebar">
       <!-- 사용자 프로필 -->
       <section class="profile-area">
+
+                <div class="button-logo">
+            <a
+                href="{{ url_for('index') }}"
+                class="index-link"
+            >    
+            ㅁㄴㄸ
+            </a>
+        </div>
+
         <div class="profile-top">
+            
           <div class="username-box">{{ user.username }}</div>
 
           <div class="name-box">{{ user.name }}</div>
@@ -138,6 +149,10 @@
 
       <!-- 랭킹 -->
       <section class="ranking-area">
+
+        <div class="ranking-title">
+            🏆 JUNGLE RANKING
+        </div>
         <table class="ranking-table">
           <thead>
             <tr>
