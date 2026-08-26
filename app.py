@@ -129,11 +129,9 @@ def signup():
 def dashboard():
     username = get_jwt_identity()
 
-    user = {
-        "name": username,
-        "mbti": "ENFP",
-        "want": "맛있는 간식 주세요"
-        }
+    user = db.users.find_one(
+        {"username": username
+         })
 
     ranking = [
         {"name": "이지민", "ranking": 157},

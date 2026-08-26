@@ -75,6 +75,37 @@
     transform: rotateY(180deg);
 }
 
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  justify-content: space-around;
+  padding: 0 0.2em;
+  text-align: center;
+  width: 5em;
+}
+ 
+.star-rating input {
+  display: none;
+}
+ 
+.star-rating label {
+  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 2.3px;
+  -webkit-text-stroke-color: #2b2a29;
+  cursor: pointer;
+}
+ 
+.star-rating :checked ~ label {
+  -webkit-text-fill-color: gold;
+}
+ 
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  -webkit-text-fill-color: #fff58c;
+}
+
     .button-area {
       display: flex;
       gap: 100px;
@@ -86,6 +117,7 @@
       background-color: white;
       border: 1px solid #555;
       cursor: pointer;
+      font-size: 20px;
     }
 
     .sidebar {
@@ -101,33 +133,33 @@
 
     .profile-top {
       display: flex;
+      justify-content: space-evenly;
       align-items: center;
       gap: 25px;
       margin-bottom: 25px;
     }
 
-    .profile-image {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background-color: #ddd;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
+    .username-box,
     .name-box {
-      width: 130px;
-      padding: 15px;
-      background-color: white;
-      text-align: center;
+        flex: 1;
+        height: 40px;
+        width: 130px;
+        padding: 15px;
+        background-color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
     }
 
     .profile-info {
       background-color: white;
       margin-bottom: 15px;
       padding: 10px;
+      font-size: 20px;
+      height: 80px;
+      text-align: center;
     }
 
     .profile-info p {
@@ -142,6 +174,7 @@
       background-color: white;
       border: none;
       cursor: pointer;
+      font-size: 20px;
     }
 
     .ranking-area {
@@ -197,22 +230,27 @@
 
                     <h2 id="card-title">내 마니또</h2>
 
-                    <p>
-                        이름 :
-                        <span id="card-name"></span>
-                    </p>
+                    <p>이름 : <span id="card-name"></span></p>
+                    <p>MBTI : <span id="card-mbti"></span></p>
+                    <p>WANT : <span id="card-want"></span></p>
 
-                    <p>
-                        MBTI :
-                        <span id="card-mbti"></span>
-                    </p>
-
-                    <p>
-                        WANT :
-                        <span id="card-want"></span>
-                    </p>
-
-                </div>
+                    <div id="app">
+                    <div id="manitti-extra" style="display: none;">
+                        <div class="star-rating space-x-4 mx-auto">
+                            <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings"/>
+                            <label for="5-stars" class="star pr-4">★</label>
+                            <input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
+                            <label for="4-stars" class="star">★</label>
+                            <input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
+                            <label for="3-stars" class="star">★</label>
+                            <input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
+                            <label for="2-stars" class="star">★</label>
+                            <input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
+                            <label for="1-star" class="star">★</label>
+                        </div>
+                    </div>                        
+                            <button type="button" class="rating-button" @click="submitRating">별점 등록</button>
+                    </div>
 
             </div>
         </div>
@@ -221,11 +259,11 @@
         <div class="button-area">
 
             <button onclick="showManitto()">
-                내 마니또
+                마니또
             </button>
 
             <button onclick="showManitti()">
-                내 마니띠
+                마니띠
             </button>
 
         </div>
@@ -239,12 +277,12 @@
 
             <div class="profile-top">
 
-                <div class="profile-image">
-                    사진
+                <div class="username-box">
+                    {{ user.username }}
                 </div>
 
                 <div class="name-box">
-                    {{ user.name }}
+                    {{user.name}}
                 </div>
 
             </div>
@@ -306,6 +344,8 @@
             document.getElementById("card-mbti").innerText = "ENFP";
             document.getElementById("card-want").innerText = "초콜릿 주세요";
 
+            document.getElementById("manitti-extra").style.display = "none";
+
             card.classList.add("flipped");
         }
 
@@ -317,9 +357,24 @@
             document.getElementById("card-mbti").innerText = "ISTJ";
             document.getElementById("card-want").innerText = "커피 주세요";
 
+            document.getElementById("manitti-extra").style.display = "block";
+
             card.classList.add("flipped");
         }
     </script>
+
+<script>
+    const app = Vue.createApp({
+
+        data() {
+            return {
+                ratings: 0
+            }
+        }
+    });
+
+        app.mount('#app');
+</script>
 
 </body>
 
