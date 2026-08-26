@@ -1,291 +1,170 @@
 <!doctype html>
 <html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Dashboard</title>
 
     <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
-</head>
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
 
-<body class="dashboard-page">
-
-
+  <body class="dashboard-page">
     <!-- =====================
          왼쪽
     ====================== -->
 
     <main class="main-area">
+      <!-- Flip 카드 -->
+      <div class="flip">
+        <div class="manitto-card" id="manitto-card">
+          <!-- 앞면 -->
+          <div class="card-front">
+            <h2>마니또</h2>
 
+            <p>버튼을 눌러 확인하세요!</p>
+          </div>
 
-        <!-- Flip 카드 -->
-        <div class="flip">
+          <!-- 뒷면 -->
+          <div class="card-back">
+            <h2 id="card-title">내 마니또</h2>
 
-            <div
-                class="manitto-card"
-                id="manitto-card"
-            >
+            <p>
+              이름 :
+              <span id="card-name"></span>
+            </p>
 
+            <p>
+              MBTI :
+              <span id="card-mbti"></span>
+            </p>
 
-                <!-- 앞면 -->
-                <div class="card-front">
+            <p>
+              WANT :
+              <span id="card-want"></span>
+            </p>
 
-                    <h2>마니또</h2>
+            <!-- 마니띠에서만 표시 -->
+            <div id="manitti-extra" style="display: none">
+              <div class="rating-wrap">
+                <div class="star-rating">
+                  <input type="radio" id="5-stars" name="rating" value="5" />
+                  <label for="5-stars" class="star" data-rating="5">★</label>
 
-                    <p>
-                        버튼을 눌러 확인하세요!
-                    </p>
+                  <input type="radio" id="4-stars" name="rating" value="4" />
+                  <label for="4-stars" class="star" data-rating="4">★</label>
 
+                  <input type="radio" id="3-stars" name="rating" value="3" />
+                  <label for="3-stars" class="star" data-rating="3">★</label>
+
+                  <input type="radio" id="2-stars" name="rating" value="2" />
+                  <label for="2-stars" class="star" data-rating="2">★</label>
+
+                  <input type="radio" id="1-star" name="rating" value="1" />
+                  <label for="1-star" class="star" data-rating="1">★</label>
                 </div>
 
+                <span id="rating-emoji"> 🙂 </span>
+              </div>
 
-                <!-- 뒷면 -->
-                <div class="card-back">
-
-                    <h2 id="card-title">
-                        내 마니또
-                    </h2>
-
-                    <p>
-                        이름 :
-                        <span id="card-name"></span>
-                    </p>
-
-                    <p>
-                        MBTI :
-                        <span id="card-mbti"></span>
-                    </p>
-
-                    <p>
-                        WANT :
-                        <span id="card-want"></span>
-                    </p>
-
-
-                    <!-- 마니띠에서만 표시 -->
-                    <div
-                        id="manitti-extra"
-                        style="display: none;"
-                    >
-
-                        <div class="rating-wrap">
-
-                            <div class="star-rating">
-
-                                <input
-                                    type="radio"
-                                    id="5-stars"
-                                    name="rating"
-                                    value="5"
-                                >
-                                <label
-                                    for="5-stars"
-                                    class="star"
-                                    data-rating="5"
-                                >★</label>
-
-
-                                <input
-                                    type="radio"
-                                    id="4-stars"
-                                    name="rating"
-                                    value="4"
-                                >
-                                <label
-                                    for="4-stars"
-                                    class="star"
-                                    data-rating="4"
-                                >★</label>
-
-
-                                <input
-                                    type="radio"
-                                    id="3-stars"
-                                    name="rating"
-                                    value="3"
-                                >
-                                <label
-                                    for="3-stars"
-                                    class="star"
-                                    data-rating="3"
-                                >★</label>
-
-
-                                <input
-                                    type="radio"
-                                    id="2-stars"
-                                    name="rating"
-                                    value="2"
-                                >
-                                <label
-                                    for="2-stars"
-                                    class="star"
-                                    data-rating="2"
-                                >★</label>
-
-
-                                <input
-                                    type="radio"
-                                    id="1-star"
-                                    name="rating"
-                                    value="1"
-                                >
-                                <label
-                                    for="1-star"
-                                    class="star"
-                                    data-rating="1"
-                                >★</label>
-
-                            </div>
-
-
-                            <span id="rating-emoji">
-                                🙂
-                            </span>
-
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="rating-submit-button"
-                            onclick="submitRating()"
-                        >
-                            별점 등록
-                        </button>
-
-                    </div>
-
-                </div>
-
+              <button
+                type="button"
+                class="rating-submit-button"
+                onclick="submitRating()"
+              >
+                별점 등록
+              </button>
             </div>
-
+          </div>
         </div>
+      </div>
 
+      <!-- 버튼 -->
+      <div class="button-area">
+        <button type="button" onclick="showManitto()">마니또</button>
 
-        <!-- 버튼 -->
-        <div class="button-area">
+        <button type="button" onclick="showManitti()">마니띠</button>
+      </div>
+      {% if is_admin %}
+      <div
+        class="admin-control-panel p-3 mb-4 bg-light rounded-3 border text-center"
+      >
+        <h5 class="fw-bold mb-3">관리자 제어판</h5>
 
-            <button
-                type="button"
-                onclick="showManitto()"
-            >
-                마니또
-            </button>
+        <!-- 셔플 버튼 -->
+        <button
+          type="button"
+          class="btn btn-warning me-2"
+          onclick="handleShuffle()"
+        >
+          마니또 셔플 실행
+        </button>
 
-            <button
-                type="button"
-                onclick="showManitti()"
-            >
-                마니띠
-            </button>
-
-        </div>
-
+        <!-- 공개/숨김 토글 버튼 -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="handleToggleOpen()"
+        >
+          마니또 공개 여부 전환
+        </button>
+      </div>
+      {% endif %}
     </main>
-
 
     <!-- =====================
          오른쪽
     ====================== -->
 
     <aside class="sidebar">
+      <!-- 사용자 프로필 -->
+      <section class="profile-area">
+        <div class="profile-top">
+          <div class="username-box">{{ user.username }}</div>
 
+          <div class="name-box">{{ user.name }}</div>
+        </div>
 
-        <!-- 사용자 프로필 -->
-        <section class="profile-area">
+        <div class="profile-info">
+          <p>MBTI : {{ user.mbti }}</p>
 
+          <p>WANT : {{ user.want }}</p>
+        </div>
 
-            <div class="profile-top">
+        <a href="{{ url_for('logout') }}" class="logout-link"> 로그아웃 </a>
+      </section>
 
-                <div class="username-box">
-                    {{ user.username }}
-                </div>
+      <!-- 랭킹 -->
+      <section class="ranking-area">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>이름</th>
+              <th>별점</th>
+            </tr>
+          </thead>
 
-                <div class="name-box">
-                    {{ user.name }}
-                </div>
+          <tbody>
+            {% for rank_user in ranking %}
 
-            </div>
+            <tr>
+              <td>{{ loop.index }}</td>
 
+              <td>{{ rank_user.name }}</td>
 
-            <div class="profile-info">
+              <td>{{ "%.1f"|format(rank_user.ranking) }}</td>
+            </tr>
 
-                <p>
-                    MBTI : {{ user.mbti }}
-                </p>
-
-                <p>
-                    WANT : {{ user.want }}
-                </p>
-
-            </div>
-
-
-            <a
-                href="{{ url_for('logout') }}"
-                class="logout-link"
-            >
-                로그아웃
-            </a>
-
-        </section>
-
-
-        <!-- 랭킹 -->
-        <section class="ranking-area">
-
-            <table class="ranking-table">
-
-                <thead>
-
-                    <tr>
-                        <th>순위</th>
-                        <th>이름</th>
-                        <th>별점</th>
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    {% for rank_user in ranking %}
-
-                    <tr>
-                        <td>
-                            {{ loop.index }}
-                        </td>
-
-                        <td>
-                            {{ rank_user.name }}
-                        </td>
-
-                        <td>
-                            {{ "%.1f"|format(rank_user.ranking) }}
-                        </td>
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </section>
-
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
     </aside>
 
-
-    <script
-        src="{{ url_for('static', filename='js/dashboard.js') }}"
-    ></script>
-
-</body>
-
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  </body>
 </html>
