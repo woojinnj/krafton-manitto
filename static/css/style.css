@@ -15,7 +15,7 @@ body {
     min-height: 100vh;
 
     font-family: "Noto Sans KR", sans-serif;
-    color: #114441;
+    color: #F2AA00;
     font-weight: 400;
 }
 
@@ -23,11 +23,11 @@ button,
 input,
 select {
     font-family: "Noto Sans KR", sans-serif;
-    color: #114441;
+    color: #F2AA00;
 }
 
 a {
-    color: #114441;
+    color: #F2AA00;
     text-decoration: none;
 }
 
@@ -37,7 +37,11 @@ a {
 ========================= */
 
 .index-page {
-    background-color: #05d182;
+    background-image: url("../images/3f494af.webp");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
     display: flex;
     justify-content: center;
@@ -52,7 +56,7 @@ a {
 }
 
 .title {
-    color: #114441;
+    color: #F2AA00;
 
     font-size: clamp(80px, 12vw, 200px);
     font-weight: 900;
@@ -63,7 +67,7 @@ a {
 }
 
 .subtitle {
-    color: #114441;
+    color: #F2AA00;
 
     font-size: clamp(60px, 9vw, 150px);
     font-weight: 900;
@@ -103,7 +107,7 @@ a {
 
 .index-button:hover {
     background-color: white;
-    color: #114441;
+    color: #F2AA00;
 }
 
 
@@ -116,7 +120,9 @@ a {
     justify-content: center;
     align-items: center;
 
-    background-color: white;
+    background-image: url("../images/3f494af.webp");
+    background-size: cover;
+    background-position: center;
 }
 
 .auth-container {
@@ -135,7 +141,7 @@ a {
 }
 
 .index-link {
-    color: #114441;
+    color: #F2AA00;
 
     font-size: 42px;
     font-weight: 900;
@@ -144,7 +150,7 @@ a {
 }
 
 .index-link:visited {
-    color: #114441;
+    color: #F2AA00;
 }
 
 
@@ -168,7 +174,7 @@ a {
 
     border: 1px solid #ddd;
 
-    color: #114441;
+    color: #F2AA00;
 
     font-size: 18px;
     font-weight: 400;
@@ -178,7 +184,7 @@ a {
 /* placeholder도 통일 */
 
 .auth-input::placeholder {
-    color: #114441;
+    color: #F2AA00;
     opacity: 0.6;
 }
 
@@ -193,9 +199,9 @@ a {
 
     background-color: white;
 
-    border: 4px solid #114441;
+    border: 4px solid #F2AA00;
 
-    color: #114441;
+    color: #F2AA00;
 
     font-size: 28px;
     font-weight: 700;
@@ -233,7 +239,7 @@ a {
 
     min-height: 100vh;
 
-    color: #114441;
+    color: #F2AA00;
 }
 
 
@@ -246,6 +252,11 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    background-image: url("../images/3f494af.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 
@@ -290,16 +301,32 @@ a {
 }
 
 .card-front {
-    background-color: red;
+    background:
+        linear-gradient(
+            rgba(242, 170, 0, 0.92),
+            rgba(242, 170, 0, 0.92)
+        ),
+        url("../images/jungle-leaves.png");
 
-    color: #114441;
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .card-back {
-    background-color: royalblue;
+    background-color: #fffdf4;
+    color: #F2AA00;
 
-    /* 파란색 배경이라 흰 글씨 유지 */
-    color: white;
+    border: 2px solid #F2AA00;
+    border-radius: 20px;
+
+    transform: rotateY(180deg);
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 
     transform: rotateY(180deg);
 }
@@ -329,10 +356,12 @@ a {
     height: 60px;
 
     background-color: white;
+    background-size: cover;
+    background-position: center;
 
-    border: 1px solid #114441;
+    border: 1px solid #F2AA00;
 
-    color: #114441;
+    color: #F2AA00;
 
     font-size: 20px;
     font-weight: 700;
@@ -382,7 +411,7 @@ a {
 
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: #114441;
+    -webkit-text-stroke-color: #F2AA00;
 }
 
 
@@ -421,9 +450,9 @@ a {
 
     background-color: white;
 
-    border: 1px solid #114441;
+    border: 1px solid #F2AA00;
 
-    color: #114441;
+    color: #F2AA00;
 
     font-size: 16px;
     font-weight: 700;
@@ -442,7 +471,7 @@ a {
 
     border-left: 1px solid #ddd;
 
-    color: #114441;
+    color: #F2AA00;
 }
 
 .profile-area {
@@ -450,7 +479,10 @@ a {
 
     padding: 30px;
 
-    background-color: #c8ff8c;
+    background-image: url("../images/3f494af.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .profile-top {
@@ -477,7 +509,7 @@ a {
     justify-content: center;
     align-items: center;
 
-    color: #114441;
+    color: #F2AA00;
 
     text-align: center;
 
@@ -493,7 +525,7 @@ a {
 
     background-color: white;
 
-    color: #114441;
+    color: #F2AA00;
 
     text-align: center;
 
@@ -520,14 +552,14 @@ a {
 
     background-color: white;
 
-    color: #114441;
+    color: #F2AA00;
 
     font-size: 18px;
     font-weight: 700;
 }
 
 .logout-link:visited {
-    color: #114441;
+    color: #F2AA00;
 }
 
 
@@ -538,7 +570,7 @@ a {
 .ranking-area {
     background-color: white;
 
-    color: #114441;
+    color: #F2AA00;
 }
 
 .ranking-table {
@@ -546,7 +578,7 @@ a {
 
     border-collapse: collapse;
 
-    color: #114441;
+    color: #F2AA00;
 
     text-align: center;
 }
