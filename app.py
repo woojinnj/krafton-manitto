@@ -1,6 +1,5 @@
 import random
 
-from bson.objectid import ObjectId
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_jwt_extended import (
     JWTManager,
@@ -115,6 +114,7 @@ def signup():
                 "mbti": mbti,
                 "rating_sum": 0,
                 "rating_count": 0,
+                "target_id": None,
             }
         )
 
@@ -133,47 +133,59 @@ def dashboard():
 # 기능
 ##############################
 
+
 # 좋아요 주기 / 완성기능 / JWT로 수정
-@app.route('/api/likes', methods=['POST'])
+@app.route("/api/likes", methods=["POST"])
 @jwt_required()
 def likes():
-    username=get_jwt_identity()
-    like = int(request.form.get('like'))
+    username = get_jwt_identity()
+    current_user = users.find_one({'username':username})
+
+    if current_user.get("target_id") is None:
+        return jsonify({
+        "result": "false",
+        "message": "아직 마니또가 배정되지 않았습니다."
+    })
+
+    try:
+        like = int(request.form.get("like"))
+
+    except (TypeError, ValueError):
+        return jsonify({"result": "false"})
+
     # 5보다 작게 받기 추가해야함
     if 1 <= like <= 5:
-        me = db.users.update_one(
-            {"targetId": username},
-            {"$inc":{
-                "rating_sum": like, 
-                "rating_count": 1
-                }}
+        users.update_one(
+            {"target_id": username}, {"$inc": {"rating_sum": like, "rating_count": 1}}
         )
-        return jsonify({"result":"success"})
-    #실패
-    return jsonify({"result":"false"})
+        return jsonify({"result": "success"})
+    # 실패
+    return jsonify({"result": "false"})
+
 
 # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
-@app.route('/api/sort', methods=['GET'])
+@app.route("/api/sort", methods=["GET"])
 def sort():
-    userList = list(users.find({}, {'_id':0 , 'name':1, 'rating_sum':1, 'rating_count':1}))
-    
+    userList = list(
+        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+    )
+
     ranker = []
     for user in userList:
-        name = user.get('name')
-        sum = user.get('rating_sum',0)
-        count = user.get('rating_count',0)
+        name = user.get("name")
+        sum = user.get("rating_sum", 0)
+        count = user.get("rating_count", 0)
         if count != 0:
-            avg = sum/ count
-            ranker.append({'name': name, 'avg': avg})
-     #파이썬 정렬 함수
-    ranker.sort(key=lambda x: x['avg'], reverse=True)
+            avg = sum / count
+            ranker.append({"name": name, "avg": avg})
+    # 파이썬 정렬 함수
+    ranker.sort(key=lambda x: x["avg"], reverse=True)
 
-    return jsonify({"reuslt":"success","ranker":ranker[:5]})
+    return jsonify({"result": "success", "ranker": ranker[:5]})
 
-    
 
 # 셔플하기 /success
-@app.route('/api/shuffle', methods=['POST'])
+@app.route("/api/shuffle", methods=["POST"])
 # 관리자 인증방식 추가
 def shuffle():
     # 데이터베이스를 가져오기
@@ -184,45 +196,58 @@ def shuffle():
     # 셔플하기 성공
     if n > 2:
         for i in range(n):
-            db.users.update_one(
+            users.update_one(
                 {"username": userList[i]["username"]},
-                {"$set": {"targetId": userList[(i + 1) % n]["username"]}},
+                {"$set": {"target_id": userList[(i + 1) % n]["username"]}},
             )
         return jsonify({"result": "success"})
 
     # 셔플하기 실패
     return jsonify({"result": "false"})
 
+
 ##############################
 # 대시보드 메인화면 기능
 ##############################
 
+
 # 마니또 조회하기 / 수정사항 / 기능 넘어가야 함
-@app.route('/dashboard/showManitto', methods=['GET'])
+@app.route("/dashboard/showManitto", methods=["GET"])
 @jwt_required()
 def showManitto():
-    username=get_jwt_identity()
-
-    #마니EH 정보
-    manitto = users.find_one({'targetId': username})
-
-    return jsonify({'result': 'success', 'user': manitto})
+    username = get_jwt_identity()
+    current_user = users.find_one({'username':username})
+    
+    if current_user.get("target_id") is None:
+        return jsonify({
+        "result": "false",
+        "message": "아직 마니또가 배정되지 않았습니다."
+    })
+    # 마니또 정보
+    manitto = users.find_one({"target_id": username}, {"_id": 0, "name": 1})
 
     return jsonify({"result": "success", "user": manitto})
 
 
 # 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
-@app.route('/dashboard/showManitti', methods=['GET'])
+@app.route("/dashboard/showManitti", methods=["GET"])
 @jwt_required()
 def showManitti():
-    username=get_jwt_identity()
-    #나의 정보
-    currentUser = users.find_one({'username': username})
-    #마니띠
-    manitti = users.find_one({'username':(currentUser['targetId'])})
-
-    manitti = getUserId(me["targetId"])  # 마니띠
-
+    username = get_jwt_identity()
+    
+    # 나의 정보
+    current_user = users.find_one({"username": username})
+    
+    if current_user.get("target_id") is None:
+        return jsonify({
+        "result": "false",
+        "message": "아직 마니또가 배정되지 않았습니다."
+    })
+    
+    # 마니띠
+    manitti = users.find_one(
+        {"username": (current_user["target_id"])}, {"_id": 0, "name": 1}
+    )
     return jsonify({"result": "success", "user": manitti})
 
 
@@ -230,22 +255,32 @@ def showManitti():
 # 사이드바 기능
 ##############################
 
+
 # 마이페이지 보기 / 수정사항 / 프론트로 넘어가도 되지 않나요 POST는 업데이트 인데 잘 모르겠음
-@app.route('/dashboard/side/myPage', methods=['GET'])
+@app.route("/dashboard/side/myPage", methods=["GET"])
+@jwt_required()
 def myPage():
-    user_id = request.form.get('id')
+    username = get_jwt_identity()
     user = users.find_one(
-            {'_id':ObjectId(user_id)},
-            {'_id':0, 'name':1, 'mbti':1, 'rating_sum':1, 'want':1}
-        )
-    return jsonify({'result': 'success', 'user': user})
+        {"username": username},
+        {"_id": 0, "name": 1, "mbti": 1, "rating_sum": 1, "want": 1, "rating_count": 1},
+    )
+    
+    count = user.get("rating_count", 0)
+    if count == 0:
+        avg = 0
+    else:
+        avg = user.get("rating_sum", 0) / count
+
+    return jsonify({"result": "success", "user": user, "avg": avg})
+
 
 # 정보 업데이트 /
-@app.route('/dashboard/side/update', methods=['PUT'])
+@app.route("/dashboard/side/update", methods=["PUT"])
 @jwt_required()
 def update_user():
-    username=get_jwt_identity()
-    
+    username = get_jwt_identity()
+
     # 들어온 값만 dictionary
     update_data = {}
     if "name" in request.form:
@@ -256,14 +291,20 @@ def update_user():
         update_data["want"] = request.form["want"]
 
     # update_data에 포함된 필드만 수정
-    users.update_one({'username': username}, {'$set': update_data})
-    return jsonify({'result': 'success'})
+    users.update_one({"username": username}, {"$set": update_data})
+    return jsonify({"result": "success"})
+
 
 ####################
 # 유틸 함수
 ####################
 
-
+def has_target(username):
+    user = users.find_one(
+        {"username": username},
+        {"target_id":1}
+    )
+    return user and user.get("target_id") is not None
 
 
 # 더미데이터 테스트
@@ -282,7 +323,7 @@ def update_user():
 #         u["password"] = generate_password_hash("1234")  # 회원가입에도 쓰는 해시 함수
 #         u["rating_sum"] = 0
 #         u["rating_count"] = 0
-#         u["targetId"] = None
+#         u["target_id"] = None
 
 #     users.insert_many(dummy_users)   # 5명 한 번에 삽입
 #     return jsonify({"result": "success", "inserted": len(dummy_users)})
