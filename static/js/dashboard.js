@@ -110,7 +110,6 @@ function loadCard(url, title, showRating) {
 /* =============================
    별점 등록
 ============================= */
-
 function submitRating() {
 
     const selectedRating =
@@ -199,113 +198,88 @@ function submitRating() {
    이모티콘
 ============================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const stars =
-            document.querySelectorAll(".star");
-
-        const ratingEmoji =
-            document.getElementById(
-                "rating-emoji"
-            );
+    const stars = document.querySelectorAll(".star");
+    const ratingEmoji = document.getElementById("rating-emoji");
+    const starRating = document.querySelector(".star-rating");
 
 
-        function getEmoji(rating) {
+    // 별점에 따른 이모티콘
+    function getEmoji(rating) {
 
-            switch (rating) {
+        switch (rating) {
 
-                case 1:
-                    return "😭";
+            case 1:
+                return "😭";
 
-                case 2:
-                    return "😢";
+            case 2:
+                return "😢";
 
-                case 3:
-                    return "🙂";
+            case 3:
+                return "🙂";
 
-                case 4:
-                    return "😄";
+            case 4:
+                return "😄";
 
-                case 5:
-                    return "😍";
+            case 5:
+                return "😍";
 
-                default:
-                    return "🙂";
-            }
+            default:
+                return "🙂";
         }
+    }
 
 
-        stars.forEach(function (star) {
+    // 각 별에 마우스를 올렸을 때
+    stars.forEach(function (star) {
 
-            /* 마우스를 별에 올리는 즉시 */
-            star.addEventListener(
-                "mouseenter",
-                function () {
+        star.addEventListener("mouseenter", function () {
 
-                    const rating =
-                        Number(
-                            this.dataset.rating
-                        );
+            const rating = Number(this.dataset.rating);
 
-                    ratingEmoji.innerText =
-                        getEmoji(rating);
-                }
-            );
-
-
-            /* 별 클릭 */
-            star.addEventListener(
-                "click",
-                function () {
-
-                    const rating =
-                        Number(
-                            this.dataset.rating
-                        );
-
-                    ratingEmoji.innerText =
-                        getEmoji(rating);
-                }
-            );
+            ratingEmoji.innerText = getEmoji(rating);
 
         });
 
 
-        /*
-           별 영역에서 마우스를 빼면
-           선택된 별의 이모티콘 유지
-        */
-        const starRating =
+        // 별을 클릭했을 때도 해당 표정 유지
+        star.addEventListener("click", function () {
+
+            const rating = Number(this.dataset.rating);
+
+            ratingEmoji.innerText = getEmoji(rating);
+
+        });
+
+    });
+
+
+    // 별 영역에서 마우스가 빠져나갔을 때
+    starRating.addEventListener("mouseleave", function () {
+
+        const selectedRating =
             document.querySelector(
-                ".star-rating"
+                'input[name="rating"]:checked'
             );
 
 
-        starRating.addEventListener(
-            "mouseleave",
-            function () {
+        // 선택한 별점이 있으면 선택한 점수의 표정 유지
+        if (selectedRating) {
 
-                const checked =
-                    document.querySelector(
-                        'input[name="rating"]:checked'
-                    );
+            const rating =
+                Number(selectedRating.value);
 
+            ratingEmoji.innerText =
+                getEmoji(rating);
 
-                if (checked) {
+        } else {
 
-                    ratingEmoji.innerText =
-                        getEmoji(
-                            Number(checked.value)
-                        );
+            // 아직 선택하지 않았다면 기본 표정
+            ratingEmoji.innerText = "🙂";
 
-                } else {
+        }
 
-                    ratingEmoji.innerText = "🙂";
-                }
-            }
-        );
+    });
 
-    }
-);
+});
