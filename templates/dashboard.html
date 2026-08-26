@@ -472,9 +472,9 @@
                 });
             }
             
-        }
-
-        stars.forEach(function (star) {
+        },
+        mounted(){
+            stars.forEach(function (star) {
 
             star.addEventListener("mouseenter", function () {
 
@@ -490,10 +490,10 @@
                 ratingEmoji.innerText = getEmoji(rating);
             });
 
-        });
-
+        })
+      }    
     });
-
+  
     app.mount('#app');
 </script>
 
