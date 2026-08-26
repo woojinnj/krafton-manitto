@@ -270,7 +270,7 @@ def getUserId(user_id):
 #         {"username": "test5", "name": "핑수", "want": "같이 산책", "mbti": "INFP"},
 #     ]
 #     for u in dummy_users:
-#         u["password"] = generate_password_hash("123ㅡㅁ4")  # 회원가입에도 쓰는 해시 함수
+#         u["password"] = generate_password_hash("1234")  # 회원가입에도 쓰는 해시 함수
 #         u["rating_sum"] = 0
 #         u["rating_count"] = 0
 #         u["targetId"] = None
