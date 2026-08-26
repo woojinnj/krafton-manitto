@@ -55,6 +55,13 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/logout", methods=["GET"])
+@jwt_required()
+def logout():
+    response = redirect(url_for("index"))
+    unset_jwt_cookies(response)
+    return response
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -95,10 +102,10 @@ def signup():
                 want=want,
             )
 
-        if len(password) < 8:
+        if len(password) < 4:
             return render_template(
                 "signup.html",
-                error="비밀번호는 8글자 이상이어야 합니다.",
+                error="비밀번호는 4글자 이상이어야 합니다.",
                 username=username,
                 name=name,
                 mbti=mbti,
@@ -117,18 +124,12 @@ def signup():
                 "rating_sum": 0,
                 "rating_count": 0,
                 "target_id": None,
-                "rated":False,
+                "rated": False,
             }
         )
 
         return redirect(url_for("login"))
     return render_template("signup.html")
-
-@app.route("/logout")
-def logout():
-    response = redirect(url_for("index"))
-    unset_jwt_cookies(response)
-    return response
 
 @app.route("/dashboard")
 @jwt_required()
@@ -174,17 +175,13 @@ def likes():
     current_user = users.find_one({"username": username})
 
     if current_user.get("target_id") is None:
-        return jsonify({
-            "result": "false",
-            "message": "아직 마니또가 배정되지 않았습니다."
-        })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     # 이미 별점을 줬는지 확인
     if current_user.get("rated", False):
-        return jsonify({
-            "result": "false",
-            "message": "이미 별점을 등록했습니다."
-        })
+        return jsonify({"result": "false", "message": "이미 별점을 등록했습니다."})
 
     try:
         like = int(request.form.get("like"))
@@ -192,25 +189,18 @@ def likes():
         return jsonify({"result": "false"})
 
     if 1 <= like <= 5:
-
         # 내 마니띠에게 별점 추가
         users.update_one(
-            {"target_id": username},
-            {"$inc": {
-                "rating_sum": like,
-                "rating_count": 1
-            }}
+            {"target_id": username}, {"$inc": {"rating_sum": like, "rating_count": 1}}
         )
 
         # 나는 별점을 줬다고 표시
-        users.update_one(
-            {"username": username},
-            {"$set": {"rated": True}}
-        )
+        users.update_one({"username": username}, {"$set": {"rated": True}})
 
         return jsonify({"result": "success"})
 
     return jsonify({"result": "false"})
+
 
 # # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
 # @app.route("/api/sort", methods=["GET"])
@@ -269,10 +259,9 @@ def showManitto():
     current_user = users.find_one({"username": username})
 
     if current_user.get("target_id") is None:
-        return jsonify({
-            "result": "false",
-            "message": "아직 마니또가 배정되지 않았습니다."
-        })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     manitto = users.find_one(
         {"username": current_user["target_id"]},
@@ -280,6 +269,7 @@ def showManitto():
     )
 
     return jsonify({"result": "success", "user": manitto})
+
 
 # 마니띠 조회하기 / 수정사항 / 기능 넘어가야 함
 @app.route("/dashboard/showManitti", methods=["GET"])
@@ -290,10 +280,9 @@ def showManitti():
     current_user = users.find_one({"username": username})
 
     if current_user.get("target_id") is None:
-        return jsonify({
-            "result": "false",
-            "message": "아직 마니또가 배정되지 않았습니다."
-        })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     manitti = users.find_one(
         {"target_id": username},
@@ -351,44 +340,45 @@ def update_user():
 # 유틸 함수
 ####################
 
+
 def get_target(username):
-    user = users.find_one(
-        {"username": username},
-        {"_id":0, "target_id":1}
-    )
+    user = users.find_one({"username": username}, {"_id": 0, "target_id": 1})
     if user is None:
         return None
     return user.get("target_id")
 
+
 # 유저타입 / success
 def is_admin(username):
-    user = users.find_one({'username':username},{'_id':0,"role":1})
+    user = users.find_one({"username": username}, {"_id": 0, "role": 1})
     if user and user.get("role") == "admin":
         return True
     return False
+
 
 # 랭킹함수 / success
 def ranking():
     user_list = list(
         users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
     )
-    
+
     ranking = []
-    
+
     for rank_user in user_list:
         rating_sum = rank_user.get("rating_sum", 0)
         rating_count = rank_user.get("rating_count", 0)
-    
+
         if rating_count == 0:
             avg = 0
         else:
             avg = rating_sum / rating_count
-    
+
         ranking.append({"name": rank_user["name"], "ranking": avg})
-    
+
     ranking.sort(key=lambda x: x["ranking"], reverse=True)
-     
+
     return ranking
+
 
 # # 더미테스트
 # @app.route("/api/dummy")
