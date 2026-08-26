@@ -126,7 +126,31 @@ def signup():
 @jwt_required()
 def dashboard():
     username = get_jwt_identity()
-    return render_template("dashboard.html", username=username)
+
+    user = db.users.find_one({"username": username})
+
+    user_list = list(
+        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+    )
+
+    ranking = []
+
+    for rank_user in user_list:
+        rating_sum = rank_user.get("rating_sum", 0)
+        rating_count = rank_user.get("rating_count", 0)
+
+        if rating_count == 0:
+            avg = 0
+        else:
+            avg = rating_sum / rating_count
+
+        ranking.append({"name": rank_user["name"], "ranking": avg})
+
+    ranking.sort(key=lambda x: x["ranking"], reverse=True)
+
+    return render_template(
+        "dashboard.html", username=username, user=user, ranking=ranking
+    )
 
 
 ##############################
@@ -139,13 +163,12 @@ def dashboard():
 @jwt_required()
 def likes():
     username = get_jwt_identity()
-    current_target_id = users.find_one({'username':username})
+    current_user = users.find_one({"username": username})
 
     if current_user.get("target_id") is None:
-        return jsonify({
-        "result": "false",
-        "message": "아직 마니또가 배정되지 않았습니다."
-    })
+        return jsonify(
+            {"result": "false", "message": "아직 마니또가 배정되지 않았습니다."}
+        )
 
     try:
         like = int(request.form.get("like"))
@@ -156,32 +179,33 @@ def likes():
     # 5보다 작게 받기 추가해야함
     if 1 <= like <= 5:
         users.update_one(
-            {"target_id": username}, {"$inc": {"rating_sum": like, "rating_count": 1}}
+            {"target_id": username},
+            {"$inc": {"rating_sum": like, "rating_count": 1}},
         )
         return jsonify({"result": "success"})
     # 실패
     return jsonify({"result": "false"})
 
 
-# 정렬하기 / 작업완료
-@app.route("/api/sort", methods=["GET"])
-def sort():
-    userList = list(
-        users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
-    )
+# # 정렬하기 / 수정사항 / ID로 식별하는데 보안 괜찮나? / 페이지 초기화 할때마다 요청
+# @app.route("/api/sort", methods=["GET"])
+# def sort():
+#     userList = list(
+#         users.find({}, {"_id": 0, "name": 1, "rating_sum": 1, "rating_count": 1})
+#     )
 
-    ranker = []
-    for user in userList:
-        name = user.get("name")
-        sum = user.get("rating_sum", 0)
-        count = user.get("rating_count", 0)
-        if count != 0:
-            avg = sum / count
-            ranker.append({"name": name, "avg": avg})
-    # 파이썬 정렬 함수
-    ranker.sort(key=lambda x: x["avg"], reverse=True)
+#     ranker = []
+#     for user in userList:
+#         name = user.get("name")
+#         rating_sum = user.get("rating_sum", 0)
+#         count = user.get("rating_count", 0)
+#         if count != 0:
+#             avg = rating_sum / count
+#             ranker.append({"name": name, "avg": avg})
+#     # 파이썬 정렬 함수
+#     ranker.sort(key=lambda x: x["avg"], reverse=True)
 
-    return jsonify({"result": "success", "ranker": ranker[:5]})
+#     return jsonify({"result": "success", "ranker": ranker[:5]})
 
 
 # 셔플하기 / success
@@ -256,7 +280,7 @@ def myPage():
         {"username": username},
         {"_id": 0, "name": 1, "mbti": 1, "rating_sum": 1, "want": 1, "rating_count": 1},
     )
-    
+
     count = user.get("rating_count", 0)
     if count == 0:
         avg = 0

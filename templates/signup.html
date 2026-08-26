@@ -1,126 +1,163 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>signup</title>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
 
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      body {
-        min-height: 100vh;
+        body {
+            min-height: 100vh;
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-        font-family: Arial, sans-serif;
-      }
+            font-family: Arial, sans-serif;
+        }
 
-      .signup-container {
-        width: 500px;
-        text-align: center;
-      }
+        .signup-container {
+            width: 380px;
+            text-align: center;
+        }
 
-      .signup-form {
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-      }
+/* ㅁㄴㄸ 로고 */
+.button_logo {
+    margin-bottom: 50px;
+}
 
-      .signup-form input {
-        width: 100%;
-        height: 60px;
+.index-link {
+    color: #03c75a;
+    font-size: 42px;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: -3px;
+}
 
-        border: 2px solid #ddd;
-        padding: 10px 15px;
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-        font-size: 25px;
-      }
+        .signup-input,
+        .signup-select {
+            width: 100%;
+            height: 50px;
 
-      .signup-form select {
-        width: 100%;
-        height: 60px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
 
-        border: 2px solid #ddd;
-        padding: 10px 15px;
+            font-size: 16px;
+        }
 
-        font-size: 25px;
-      }
+        .signup-button {
+            width: 200px;
+            height: 60px;
 
-      .signup-button {
-        margin-top: 60px;
+            margin: 30px auto 0;
 
-        width: 300px;
-        height: 90px;
+            background-color: white;
+            border: 4px solid black;
 
-        border: 7px solid black;
-        background-color: white;
+            font-size: 25px;
+            font-weight: bold;
 
-        font-size: 45px;
-        font-weight: bold;
+            cursor: pointer;
+        }
 
-        cursor: pointer;
-      }
+        .login-link {
+            display: block;
+            margin-top: 20px;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
+
     <div class="signup-container">
-      <form class="signup-form" method="POST" action="/signup">
-        {% if error %}
-        <p>{{ error }}</p>
-        {% endif %}
-        <input
-          type="text"
-          name="username"
-          placeholder="ID"
-          value="{{ username or '' }}"
-        />
-        <input type="password" name="password" placeholder="PW" />
-        <input
-          type="text"
-          name="name"
-          placeholder="NAME"
-          value="{{ name or '' }}"
-        />
 
-        <select name="mbti" id="mbti">
-            <option value="ISTJ" {% if mbti == "ISTJ" %}selected{% endif %}>ISTJ</option>
-            <option value="ISFJ" {% if mbti == "ISFJ" %}selected{% endif %}>ISFJ</option>
-            <option value="INFJ" {% if mbti == "INFJ" %}selected{% endif %}>INFJ</option>
-            <option value="INTJ" {% if mbti == "INTJ" %}selected{% endif %}>INTJ</option>
-            <option value="ISTP" {% if mbti == "ISTP" %}selected{% endif %}>ISTP</option>
-            <option value="ISFP" {% if mbti == "ISFP" %}selected{% endif %}>ISFP</option>
-            <option value="INFP" {% if mbti == "INFP" %}selected{% endif %}>INFP</option>
-            <option value="INTP" {% if mbti == "INTP" %}selected{% endif %}>INTP</option>
-            <option value="ESTP" {% if mbti == "ESTP" %}selected{% endif %}>ESTP</option>
-            <option value="ESFP" {% if mbti == "ESFP" %}selected{% endif %}>ESFP</option>
-            <option value="ENFP" {% if mbti == "ENFP" %}selected{% endif %}>ENFP</option>
-            <option value="ENTP" {% if mbti == "ENTP" %}selected{% endif %}>ENTP</option>
-            <option value="ESTJ" {% if mbti == "ESTJ" %}selected{% endif %}>ESTJ</option>
-            <option value="ESFJ" {% if mbti == "ESFJ" %}selected{% endif %}>ESFJ</option>
-            <option value="ENFJ" {% if mbti == "ENFJ" %}selected{% endif %}>ENFJ</option>
-            <option value="ENTJ" {% if mbti == "ENTJ" %}selected{% endif %}>ENTJ</option>
-        </select>
-
-        <input
-          type="text"
-          name="want"
-          placeholder="WANT"
-          value="{{ want or '' }}"
-        />
-
-        <div>
-          <button type="submit" class="signup-button">회원가입</button>
-          <a href="/login" class="login-link">로그인하러 가기</a>
+        <div class="button_logo">
+            <a href="{{ url_for('index') }}" class="index-link">ㅁㄴㄸ</a>
         </div>
-      </form>
+
+        <form
+            class="signup-form"
+            method="POST"
+            action="/signup"
+        >
+
+            <input
+                type="text"
+                name="username"
+                class="signup-input"
+                placeholder="ID"
+            >
+
+            <input
+                type="password"
+                name="password"
+                class="signup-input"
+                placeholder="PW"
+            >
+
+            <input
+                type="text"
+                name="name"
+                class="signup-input"
+                placeholder="NAME"
+            >
+
+            <select
+                name="mbti"
+                class="signup-select"
+            >
+                <option value="ISTJ">ISTJ</option>
+                <option value="ISFJ">ISFJ</option>
+                <option value="INFJ">INFJ</option>
+                <option value="INTJ">INTJ</option>
+
+                <option value="ISTP">ISTP</option>
+                <option value="ISFP">ISFP</option>
+                <option value="INFP">INFP</option>
+                <option value="INTP">INTP</option>
+
+                <option value="ESTP">ESTP</option>
+                <option value="ESFP">ESFP</option>
+                <option value="ENFP">ENFP</option>
+                <option value="ENTP">ENTP</option>
+
+                <option value="ESTJ">ESTJ</option>
+                <option value="ESFJ">ESFJ</option>
+                <option value="ENFJ">ENFJ</option>
+                <option value="ENTJ">ENTJ</option>
+            </select>
+
+            <input
+                type="text"
+                name="want"
+                class="signup-input"
+                placeholder="WANT"
+            >
+
+            <button
+                type="submit"
+                class="signup-button"
+            >
+                회원가입
+            </button>
+
+        </form>
+
     </div>
-  </body>
+
+</body>
+
 </html>
