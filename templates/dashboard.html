@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 
 <head>
@@ -247,34 +247,73 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashboard</title>
 
-    <style>
-        /* CSS */
-    </style>
+    <title>Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="dashboard-page">
 
 
-<body>
+    <!-- =====================
+         왼쪽
+    ====================== -->
 
     <main class="main-area">
 
-        <div class="flip">
-            <div class="manitto-card" id="manitto-card">
 
+        <!-- Flip 카드 -->
+        <div class="flip">
+
+            <div
+                class="manitto-card"
+                id="manitto-card"
+            >
+
+
+                <!-- 앞면 -->
                 <div class="card-front">
+
                     <h2>마니또</h2>
-                    <p>버튼을 눌러 확인하세요!</p>
+
+                    <p>
+                        버튼을 눌러 확인하세요!
+                    </p>
+
                 </div>
 
+
+                <!-- 뒷면 -->
                 <div class="card-back">
 
-                    <h2 id="card-title">내 마니또</h2>
+                    <h2 id="card-title">
+                        내 마니또
+                    </h2>
 
-                    <p>이름 : <span id="card-name"></span></p>
-                    <p>MBTI : <span id="card-mbti"></span></p>
-                    <p>WANT : <span id="card-want"></span></p>
+                    <p>
+                        이름 :
+                        <span id="card-name"></span>
+                    </p>
 
-                    <div id="manitti-extra" style="display: none;">
+                    <p>
+                        MBTI :
+                        <span id="card-mbti"></span>
+                    </p>
+
+                    <p>
+                        WANT :
+                        <span id="card-want"></span>
+                    </p>
+
+
+                    <!-- 마니띠에서만 표시 -->
+                    <!-- 마니띠에서만 보이는 영역 -->
+<div id="manitti-extra" style="display: none;">
+
     <div class="rating-wrap">
 
         <div class="star-rating">
@@ -307,35 +346,52 @@
     >
         별점 등록
     </button>
+
 </div>
+
+                </div>
 
                 </div>
 
             </div>
 
 
+        <!-- 버튼 -->
         <div class="button-area">
 
-            <button onclick="showManitto()">
+            <button
+                type="button"
+                onclick="showManitto()"
+            >
                 마니또
             </button>
 
-            <button onclick="showManitti()">
+            <button
+                type="button"
+                onclick="showManitti()"
+            >
                 마니띠
             </button>
 
-            <button onclick="shuffleManitto()">
-                마니또 배정
-            </button>
+            <button type="button" onclick="shuffleManitto()">
+        마니또 배정
+    </button>
 
         </div>
 
     </main>
 
 
+    <!-- =====================
+         오른쪽
+    ====================== -->
+
     <aside class="sidebar">
 
+
+        <!-- 사용자 프로필 -->
         <section class="profile-area">
+
 
             <div class="profile-top">
 
@@ -344,44 +400,67 @@
                 </div>
 
                 <div class="name-box">
-                    {{user.name}}
+                    {{ user.name }}
                 </div>
 
             </div>
 
+
             <div class="profile-info">
-                <p>MBTI : {{ user.mbti }}</p>
-                <p>갖고 싶은 것 : {{ user.want }}</p>
+
+                <p>
+                    MBTI : {{ user.mbti }}
+                </p>
+
+                <p>
+                    WANT : {{ user.want }}
+                </p>
+
             </div>
 
-            <button class="logout-button">
-                            <a href="{{ url_for('index') }}" class="index-link">로그아웃</a>
 
-            </button>
+            <a
+                href="{{ url_for('logout') }}"
+                class="logout-link"
+            >
+                로그아웃
+            </a>
 
         </section>
 
 
+        <!-- 랭킹 -->
         <section class="ranking-area">
 
             <table class="ranking-table">
 
                 <thead>
+
                     <tr>
                         <th>순위</th>
                         <th>이름</th>
                         <th>별점</th>
                     </tr>
+
                 </thead>
+
 
                 <tbody>
 
                     {% for rank_user in ranking %}
 
                     <tr>
-                        <td>{{loop.index}}</td>
-                        <td>{{ rank_user.name }}</td>
-                        <td>{{ "%.1f"|format(rank_user.ranking) }}</td>
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+                        <td>
+                            {{ rank_user.name }}
+                        </td>
+
+                        <td>
+                            {{ "%.1f"|format(rank_user.ranking) }}
+                        </td>
                     </tr>
 
                     {% endfor %}
