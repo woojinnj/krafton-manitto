@@ -358,5 +358,16 @@ def get_target(username):
 #     users.insert_many(dummy_users)   # 5명 한 번에 삽입
 #     return jsonify({"result": "success", "inserted": len(dummy_users)})
 
+@app.route('/api/rating', methods=['POST'])
+def save_rating():
+    data = request.get_json()
+    rating = data.get('rating')
+
+    print("받은 별점:", rating)
+
+    return jsonify({
+        "result": "success"
+    })
+
 if __name__ == "__main__":
     app.run(debug=True)
