@@ -87,26 +87,43 @@ def signup():
                 want=want,
             )
 
-        if len(username) < 4:
+        if len(username) < 4 or len(username)>20:
             return render_template(
                 "signup.html",
-                error="아이디는 4글자 이상이어야 합니다.",
+                error="아이디는 4글자 이상 20자 이하여야 합니다.",
                 username=username,
                 name=name,
                 mbti=mbti,
                 want=want,
             )
 
-        if len(password) < 8:
+        if len(password) < 8 or len(password)>100:
             return render_template(
                 "signup.html",
-                error="비밀번호는 8글자 이상이어야 합니다.",
+                error="비밀번호는 8글자 이상 20자 이하여야 합니다.",
                 username=username,
                 name=name,
                 mbti=mbti,
                 want=want,
             )
-
+        if len(name) > 20:
+            return render_template(
+                "signup.html",
+                error="이름은 20자 이하로 입력해주세요.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
+            )
+        if len(want) > 100:
+            return render_template(
+                "signup.html",
+                error="바라는 점은 100자 이하로 입력해주세요.",
+                username=username,
+                name=name,
+                mbti=mbti,
+                want=want,
+            )
         hashed_password = generate_password_hash(password)
 
         users.insert_one(
