@@ -235,12 +235,12 @@ a {
 
   margin-bottom: 15px;
 
-  color: #d93025;
+  color: yellow;
 
   text-align: center;
 
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 /* =========================
@@ -357,7 +357,12 @@ a {
 }
 
 .card-front .question {
-  top: 30%;
+  position: absolute;
+
+  top: 35%;
+  left: 5%;
+
+  transform: translate(-50%, -50%);
 
   font-size: clamp(70px, 15vh, 180px);
   line-height: 1;
@@ -491,29 +496,34 @@ a {
 .dashboard-page .button-area {
   display: flex;
 
-  gap: 100px;
+  gap: 30px;
 }
 
 .dashboard-page .button-area button {
   width: 200px;
   height: 60px;
 
-  background-color: white;
-  background-size: cover;
-  background-position: center;
+  background-color: transparent ;
 
-  border: 1px solid var(--brand);
+  border: 2px solid white;
+  border-radius: 8px;
 
-  color: var(--brand);
+  color: white;
 
   font-size: 20px;
   font-weight: 700;
 
   cursor: pointer;
+
+  transition: 0.2s;
 }
 
 .dashboard-page .button-area button:hover {
-  background-color: #f5f5f5;
+    background-color: white;
+
+    border: 2px solid var(--brand);
+
+    color: var(--brand);
 }
 
 /* =========================
