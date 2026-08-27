@@ -107,7 +107,7 @@ function handleToggleOpen() {
       if (data.result === "success") {
         updateGameStatus(data.is_open);
         showAlert(
-          `마니또 상태가 ${data.is_open ? "공개" : "비공개"}로 전환되었습니다.`,
+          `마니띠 상태가 ${data.is_open ? "공개" : "비공개"}로 전환되었습니다.`,
         );
         return;
       }
