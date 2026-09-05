@@ -1,47 +1,59 @@
-<!doctype html>
-<html lang="ko">
+{% extends "base.html" %}
+{% block title %}정글 마니또 · 서로를 발견하는 시간{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+{% block body %}
+  <header class="site-header" aria-label="주요 메뉴">
+    <a class="brand" href="{{ url_for('main.index') }}" aria-label="정글 마니또 홈">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span>정글 마니또</span>
+    </a>
+    <nav class="header-actions" aria-label="계정 메뉴">
+      <a class="text-link" href="{{ url_for('main.login') }}">로그인</a>
+      <a class="button button-small button-light" href="{{ url_for('main.signup') }}">시작하기</a>
+    </nav>
+  </header>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <main id="main-content" class="landing-main">
+    <div class="hero-layout">
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">서로를 몰래 응원하는 정글 마니또</p>
+      <h1 id="hero-title">누군가의 하루에<br><em>작은 다정함을.</em></h1>
+      <p class="hero-copy">
+        한 사람을 몰래 응원하고, 마지막 날 서로의 마음을 발견하세요.<br>
+        작은 관심으로 서로의 하루를 따뜻하게 만들어보세요.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="{{ url_for('main.signup') }}">
+          마니또 참여하기 <span aria-hidden="true">→</span>
+        </a>
+        <a class="button button-ghost" href="{{ url_for('main.login') }}">이미 계정이 있어요</a>
+      </div>
+    </section>
 
-    <title>마니또</title>
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
-</head>
-
-<body class="index-page">
-
-    <div class="landing-container">
-
-        <div>
-            <h1 class="title">Jungle</h1>
-            <h2 class="subtitle">ㅁㄴㄸ</h2>
-        </div>
-
-        <div class="button-area">
-
-            <a
-                href="{{ url_for('login') }}"
-                class="index-button"
-            >
-                로그인
-            </a>
-
-            <a
-                href="{{ url_for('signup') }}"
-                class="index-button"
-            >
-                회원가입
-            </a>
-
-        </div>
-
+    <div class="letter-scene" aria-hidden="true">
+      <div class="letter-paper"><span class="eyebrow">나의 마니또에게</span><p>오늘도 잘하고 있어요.<br>몰래 응원할게요!</p><span class="letter-sign">너의 마니또가</span></div>
+      <div class="letter-envelope"><span class="letter-seal">m.</span></div>
+    </div>
     </div>
 
-</body>
+    <section class="story-strip" aria-label="마니또 진행 방식">
+      <article>
+        <span class="step-number">01</span>
+        <div><strong>배정</strong><p>관리자가 모두의 마니또를 섞어요.</p></div>
+      </article>
+      <article>
+        <span class="step-number">02</span>
+        <div><strong>응원</strong><p>상대가 바라는 일을 몰래 실천해요.</p></div>
+      </article>
+      <article>
+        <span class="step-number">03</span>
+        <div><strong>공개</strong><p>마지막 날 나를 응원한 친구를 만나요.</p></div>
+      </article>
+    </section>
+  </main>
 
-</html>
+  <footer class="landing-footer">
+    <span>정글 1주차 팀 프로젝트</span>
+    <span>MANITTO · 2026</span>
+  </footer>
+{% endblock %}

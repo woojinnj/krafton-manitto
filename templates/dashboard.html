@@ -1,196 +1,187 @@
-<!doctype html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% extends "base.html" %}
+{% block title %}나의 마니또 · 정글 마니또{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+{% block body %}
+  <header class="dashboard-header">
+    <a class="brand brand-light" href="{{ url_for('main.index') }}">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span>정글 마니또</span>
+    </a>
+    <div class="header-user">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span><strong data-profile-name>{{ user.name }}</strong>님, 좋은 하루예요</span>
+      <form action="{{ url_for('main.logout') }}" method="post">
+        <button class="icon-button" type="submit">로그아웃 <span aria-hidden="true">↗</span></button>
+      </form>
+    </div>
+  </header>
 
-    <title>Dashboard</title>
+  <main id="main-content" class="dashboard-shell">
+    <section class="dashboard-welcome" aria-labelledby="welcome-title">
+      <div>
+        <h1 id="welcome-title">오늘도, 몰래 다정하게<span>.</span></h1>
+        <p>작은 응원 하나로 서로의 정글을 조금 더 따뜻하게.</p>
+      </div>
+    </section>
+    <section class="reveal-area" aria-labelledby="dashboard-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="dashboard-title">나의 비밀 친구</h2>
+        </div>
+        <span id="game-status" class="status-pill {{ 'is-open' if is_open else '' }}">
+          <span aria-hidden="true"></span>{{ "마니띠 공개 중" if is_open else "마니띠 비공개" }}
+        </span>
+      </div>
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-  </head>
+      <div class="reveal-actions" aria-label="카드 선택">
+        <button class="button button-primary" type="button" data-card="manitto">
+          내 마니또 확인
+        </button>
+        <button class="button button-outline" type="button" data-card="manitti">
+          내 마니띠 확인
+        </button>
+      </div>
 
-  <body class="dashboard-page">
-    <!-- =====================
-         왼쪽
-    ====================== -->
-
-    <main class="main-area">
-      <!-- Flip 카드 -->
-      <div class="flip">
-        <div class="manitto-card" id="manitto-card">
-          <!-- 앞면 -->
-          <div class="card-front">
-            <h2 class="question">?</h2>
-            <h2>ㅁㄴㄸ</h2>
-            <p class="hint">버튼을 눌러 확인하세요!</p>
-          </div>
-
-          <!-- 뒷면 -->
-          <div class="card-back">
-            <h2 id="card-title">내 마니또</h2>
-
-            <p>
-              이름 :
-              <span id="card-name"></span>
-            </p>
-
-            <p>
-              MBTI :
-              <span id="card-mbti"></span>
-            </p>
-
-            <p>
-              WANT :
-              <span id="card-want"></span>
-            </p>
-
-            <!-- 마니띠에서만 표시 -->
-            <div id="manitti-extra" style="display: none">
-              <div class="rating-wrap">
-                <div class="star-rating">
-                  <input type="radio" id="5-stars" name="rating" value="5" />
-                  <label for="5-stars" class="star" data-rating="5">★</label>
-
-                  <input type="radio" id="4-stars" name="rating" value="4" />
-                  <label for="4-stars" class="star" data-rating="4">★</label>
-
-                  <input type="radio" id="3-stars" name="rating" value="3" />
-                  <label for="3-stars" class="star" data-rating="3">★</label>
-
-                  <input type="radio" id="2-stars" name="rating" value="2" />
-                  <label for="2-stars" class="star" data-rating="2">★</label>
-
-                  <input type="radio" id="1-star" name="rating" value="1" />
-                  <label for="1-star" class="star" data-rating="1">★</label>
-                </div>
-
-                <span id="rating-emoji"> 🙂 </span>
-              </div>
-
-              <button
-                type="button"
-                class="rating-submit-button"
-                onclick="submitRating()"
-              >
-                별점 등록
-              </button>
+      <div class="card-stage">
+        <div class="flip-card" id="manitto-card" aria-live="polite">
+          <article class="card-face card-front">
+            <div class="mystery-mark" aria-hidden="true">?</div>
+            <div class="card-intro">
+              <h2>아직은 비밀이에요</h2>
+              <span>위에서 확인할 친구를 선택해주세요</span>
             </div>
-          </div>
+          </article>
+
+          <article class="card-face card-back" inert aria-hidden="true">
+            <div class="profile-emblem" aria-hidden="true">M</div>
+            <p class="card-label" id="card-label">내가 응원할 친구</p>
+            <h2 id="card-title">내 마니또</h2>
+            <dl class="card-details">
+              <div><dt>이름</dt><dd id="card-name">—</dd></div>
+              <div><dt>MBTI</dt><dd id="card-mbti">—</dd></div>
+              <div><dt>바라는 점</dt><dd id="card-want">—</dd></div>
+            </dl>
+
+            <fieldset id="manitti-extra" class="rating-panel" hidden>
+              <legend>나의 마니띠는 어땠나요?</legend>
+              <div class="rating-row">
+                <div class="star-rating" aria-label="별점 선택">
+                  {% for score in [5, 4, 3, 2, 1] %}
+                    <input type="radio" id="rating-{{ score }}" name="rating" value="{{ score }}" aria-label="{{ score }}점">
+                    <label for="rating-{{ score }}" data-rating="{{ score }}" title="{{ score }}점">★</label>
+                  {% endfor %}
+                </div>
+                <span id="rating-emoji" aria-hidden="true">🙂</span>
+              </div>
+              <button id="rating-submit" class="card-action" type="button">별점 등록</button>
+            </fieldset>
+            <p id="rating-complete" class="rating-complete" hidden>✓ 고마운 마음을 전했어요. 별점 등록이 완료되었습니다.</p>
+          </article>
         </div>
       </div>
 
-      <!-- 버튼 -->
-      <div class="button-area">
-        <button type="button" onclick="showManitto()">마니또</button>
+      <div class="card-footer"><span>이 카드는 나만 볼 수 있어요.</span><button class="text-button" id="hide-card" type="button" hidden>카드 숨기기 ↑</button></div>
 
-        <button type="button" onclick="showManitti()">마니띠</button>
+      <div class="game-guide" aria-label="게임 진행 안내">
+        <p class="eyebrow">{{ '운영 안내' if is_admin else '이용 안내' }}</p>
+        {% if is_admin %}
+          <p>참가자가 모이면 마니또를 배정하고, 마지막 날 마니띠를 공개해주세요.</p>
+        {% elif not user.target_id %}
+          <p>아직 배정을 기다리고 있어요. 내 프로필을 준비해두면 마니또가 나를 더 잘 알 수 있어요.</p>
+        {% elif is_open %}
+          <p>비밀 친구가 공개됐어요. 나를 응원한 마니띠를 확인하고 별점으로 고마움을 전해주세요.</p>
+        {% else %}
+          <p>내 마니또는 내가 몰래 응원할 친구예요. 나를 응원하는 마니띠는 마지막 날 공개돼요.</p>
+        {% endif %}
+        <a class="refresh-link" href="{{ url_for('main.dashboard') }}">진행 상태 새로고침 ↻</a>
       </div>
+
       {% if is_admin %}
-      <section class="admin-control-panel" aria-label="관리자 제어판">
-        <h2>관리자 제어판</h2>
-        <p id="game-status">현재 상태: {{ "공개" if is_open else "비공개" }}</p>
-
-        <!-- 셔플 버튼 -->
-        <button
-          type="button"
-          class="admin-action-button"
-          onclick="handleShuffle()"
-        >
-          마니또 셔플 실행
-        </button>
-
-        <!-- 공개/숨김 토글 버튼 -->
-        <button
-          type="button"
-          class="admin-action-button"
-          onclick="handleToggleOpen()"
-        >
-          마니띠 공개 여부 전환
-        </button>
-      </section>
+        <section class="admin-panel" aria-labelledby="admin-title">
+          <div><h2 id="admin-title">게임 운영</h2></div>
+          <div class="admin-actions">
+            <button class="button button-dark" id="shuffle-button" type="button">새로 배정하기</button>
+            <button class="button button-outline" id="toggle-button" type="button">공개 상태 전환</button>
+          </div>
+        </section>
       {% endif %}
-    </main>
+    </section>
 
-    <!-- =====================
-         오른쪽
-    ====================== -->
-
-    <aside class="sidebar">
-      <!-- 사용자 프로필 -->
-      <section class="profile-area">
-
-                <div class="button-logo">
-            <a
-                href="{{ url_for('index') }}"
-                class="index-link"
-            >    
-            ㅁㄴㄸ
-            </a>
+    <aside class="dashboard-sidebar" aria-label="내 정보와 랭킹">
+      <section class="profile-card">
+        <div class="profile-card-header">
+          <div class="avatar" id="profile-avatar" aria-hidden="true">{{ user.name[0] }}</div>
+          <div><p class="eyebrow">내 프로필</p><h2 data-profile-name>{{ user.name }}</h2><span>@{{ user.username }}</span></div>
+          <span class="mbti-badge" id="profile-mbti">{{ user.mbti }}</span>
         </div>
-
-        <div class="profile-top">
-            
-          <div class="username-box">{{ user.username }}</div>
-
-          <div class="name-box">{{ user.name }}</div>
+        <div class="wish-card">
+          <span>마니또에게 바라는 점</span>
+          <p id="profile-want">“{{ user.want }}”</p>
         </div>
-
-        <div class="profile-info">
-          <p>MBTI : {{ user.mbti }}</p>
-
-          <p>WANT : {{ user.want }}</p>
-        </div>
-
-        <a href="{{ url_for('logout') }}" class="logout-link"> 로그아웃 </a>
+        <button class="button button-outline button-small button-full profile-edit" id="profile-edit" type="button">내 프로필 수정</button>
+        <p class="save-status" id="profile-status" role="status"></p>
       </section>
 
-      <!-- 랭킹 -->
-      <section class="ranking-area">
-
-        <div class="ranking-title">
-            🏆 JUNGLE RANKING
+      <section class="ranking-card">
+        <div class="ranking-header">
+          <div><h2>정글 랭킹</h2></div>
         </div>
-
-        <div class="ranking-scroll">
-        <table class="ranking-table">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>이름</th>
-              <th>별점</th>
-            </tr>
-          </thead>
-
-          <tbody>
+        <p class="ranking-caption">받은 별점의 누적 평균 · 동점은 공동 순위</p>
+        {% if ranking %}
+          <ol class="ranking-list">
             {% for rank_user in ranking %}
-
-            <tr>
-              <td>{{ loop.index }}</td>
-
-              <td>{{ rank_user.name }}</td>
-
-              <td>{{ "%.1f"|format(rank_user.ranking) }}</td>
-            </tr>
-
+              <li class="{{ 'top-rank' if rank_user.rank == 1 else '' }}">
+                <span class="rank-number" aria-label="{{ rank_user.rank }}위">{{ '%02d'|format(rank_user.rank) }}</span>
+                <strong>{{ rank_user.name }}</strong>
+                <span class="rank-score"><b>{{ "%.1f"|format(rank_user.ranking) }}</b> / 5.0 <small>{{ rank_user.count }}회 평가</small></span>
+              </li>
             {% endfor %}
-          </tbody>
-        </table>
-        </div>
+          </ol>
+        {% else %}
+          <div class="empty-ranking"><strong>아직 등록된 별점이 없어요</strong><p>마니띠 공개 후 별점을 등록하면<br>이곳에서 랭킹을 확인할 수 있어요.</p></div>
+        {% endif %}
       </section>
     </aside>
+  </main>
 
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-    <!-- 커스텀 모달 구조 -->
-    <div id="custom-modal" class="modal-overlay" style="display: none">
-      <div class="modal-content">
-        <p id="modal-message">메시지 내용이 들어갑니다.</p>
-        <button type="button" class="modal-close-btn" onclick="closeModal()">
-          확인
-        </button>
+  <dialog id="custom-modal" class="modal-content" aria-labelledby="modal-title" aria-describedby="modal-message">
+      <h2 id="modal-title">알림</h2>
+      <p id="modal-message"></p>
+      <div class="dialog-actions">
+        <button id="modal-cancel" type="button" class="button button-outline" hidden>취소</button>
+        <button id="modal-close" type="button" class="button button-primary">확인</button>
       </div>
-    </div>
-  </body>
-</html>
+  </dialog>
+
+  <dialog id="profile-dialog" class="modal-content profile-dialog" aria-labelledby="profile-dialog-title">
+    <h2 id="profile-dialog-title">내 프로필 수정</h2>
+    <p>마니또가 참고할 수 있도록 나를 소개해주세요.</p>
+    <form id="profile-form" class="auth-form">
+      <p id="profile-error" class="form-error" role="alert" hidden></p>
+      <div class="form-grid">
+        <div class="field">
+          <label for="edit-name">이름</label>
+          <input id="edit-name" name="name" value="{{ user.name }}" maxlength="20" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="edit-mbti">MBTI</label>
+          <select id="edit-mbti" name="mbti" required>
+            {% for mbti in mbti_types %}
+              <option value="{{ mbti }}" {{ 'selected' if user.mbti == mbti else '' }}>{{ mbti }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="edit-want">마니또에게 바라는 점</label>
+        <textarea id="edit-want" name="want" maxlength="100" rows="3" aria-describedby="want-count" required>{{ user.want }}</textarea>
+        <span class="field-help" id="want-count">{{ user.want|length }} / 100자</span>
+      </div>
+      <div class="dialog-actions">
+        <button id="profile-cancel" type="button" class="button button-outline">취소</button>
+        <button id="profile-save" type="submit" class="button button-primary">변경사항 저장</button>
+      </div>
+    </form>
+  </dialog>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>{% endblock %}

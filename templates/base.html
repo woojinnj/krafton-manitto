@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#092c25">
+    <meta name="description" content="서로를 몰래 응원하는 정글 마니또">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="정글 마니또 · 보이지 않게, 진심은 선명하게">
+    <meta property="og:description" content="한 사람을 몰래 응원하고 마지막 날 서로의 마음을 발견하세요.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-manitto.png', _external=True) }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>{% block title %}정글 마니또{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main-content">본문으로 바로가기</a>
+    {% block body %}{% endblock %}
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
